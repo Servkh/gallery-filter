@@ -86,7 +86,8 @@
 				try { images = JSON.parse( raw ); } catch ( err ) { return; }
 				if ( ! images.length ) return;
 
-				current = 0;
+				var start = parseInt( card.getAttribute( 'data-gallery-start' ) || '0', 10 );
+				current = isNaN( start ) ? 0 : start;
 				openLightbox( card.getAttribute( 'data-title' ) || '' );
 			} );
 

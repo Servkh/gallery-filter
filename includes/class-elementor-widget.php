@@ -535,9 +535,6 @@ class Elementor_Widget extends Widget_Base {
 			<div class="gf-grid">
 				<?php foreach ( $items as $item ) :
 					$images      = ! empty( $item['images'] ) ? $item['images'] : [];
-					$first_img   = ! empty( $images[0] ) ? $images[0] : [];
-					$img_url     = ! empty( $first_img['url'] ) ? $first_img['url'] : '';
-					$img_alt     = ! empty( $first_img['alt'] ) ? $first_img['alt'] : $item['title'];
 					$title       = $item['title'];
 					$cat_name    = trim( $item['category'] );
 					$cat_slug    = sanitize_title( $cat_name );
@@ -548,36 +545,77 @@ class Elementor_Widget extends Widget_Base {
 					$nofollow    = ! empty( $item['link']['nofollow'] );
 					$img_count   = count( $images );
 
-					// Build gallery JSON for the lightbox
+					// Build gallery JSON once per item — shared by all its image cards
 					$gallery_data = [];
-					foreach ( $images as $img ) {
-						if ( empty( $img['url'] ) ) continue;
+					foreach ( $images as $gimg ) {
+						if ( empty( $gimg['url'] ) ) continue;
 						$gallery_data[] = [
-							'url' => $img['url'],
-							'alt' => ! empty( $img['alt'] ) ? $img['alt'] : $title,
+							'url' => $gimg['url'],
+							'alt' => ! empty( $gimg['alt'] ) ? $gimg['alt'] : $title,
 						];
 					}
 					$gallery_json = wp_json_encode( $gallery_data );
-				?>
+
+					if ( $link_url ) {
+						$target = $is_external ? '_blank' : '_self';
+						$rel    = $nofollow ? 'nofollow' : '';
+						if ( $is_external ) $rel = trim( 'noopener noreferrer ' . $rel );
+					}
+
+					// No images: render one placeholder card
+					if ( empty( $images ) ) : ?>
 				<div
-					class="gf-card <?php echo esc_attr( $hover_zoom ); ?><?php echo $img_count > 0 ? ' gf-has-gallery' : ''; ?>"
+					class="gf-card <?php echo esc_attr( $hover_zoom ); ?>"
 					data-categories="<?php echo esc_attr( $cat_slug ); ?>"
 					data-title="<?php echo esc_attr( $title ); ?>"
 					data-gallery="<?php echo esc_attr( $gallery_json ); ?>"
+				>
+					<div class="gf-card-no-img"></div>
+					<div class="gf-card-overlay" aria-hidden="true"></div>
+					<?php if ( $cat_name ) : ?>
+					<span class="gf-badge"><?php echo esc_html( $cat_name ); ?></span>
+					<?php endif; ?>
+					<div class="gf-card-body">
+						<?php if ( $title ) : ?>
+						<h3 class="gf-title"><?php echo esc_html( $title ); ?></h3>
+						<?php endif; ?>
+						<?php if ( ! empty( $tags ) ) : ?>
+						<div class="gf-tags" aria-label="Tags">
+							<?php foreach ( $tags as $tag ) : ?>
+							<span class="gf-tag"><?php echo esc_html( $tag ); ?></span>
+							<?php endforeach; ?>
+						</div>
+						<?php endif; ?>
+					</div>
+					<?php if ( $link_url ) : ?>
+					<a href="<?php echo esc_url( $link_url ); ?>" class="gf-arrow" target="<?php echo esc_attr( $target ); ?>" <?php if ( $rel ) echo 'rel="' . esc_attr( $rel ) . '"'; ?> aria-label="Visit <?php echo esc_attr( $title ); ?>"><?php echo $this->get_arrow_svg(); ?></a>
+					<?php else : ?>
+					<span class="gf-arrow" aria-hidden="true"><?php echo $this->get_arrow_svg(); ?></span>
+					<?php endif; ?>
+				</div>
+					<?php else :
+					// One card per image — clicking opens the lightbox at that image's position
+					foreach ( $images as $img_index => $img ) :
+						if ( empty( $img['url'] ) ) continue;
+						$img_url = $img['url'];
+						$img_alt = ! empty( $img['alt'] ) ? $img['alt'] : $title;
+					?>
+				<div
+					class="gf-card <?php echo esc_attr( $hover_zoom ); ?> gf-has-gallery"
+					data-categories="<?php echo esc_attr( $cat_slug ); ?>"
+					data-title="<?php echo esc_attr( $title ); ?>"
+					data-gallery="<?php echo esc_attr( $gallery_json ); ?>"
+					data-gallery-start="<?php echo $img_index; ?>"
 					role="button"
 					tabindex="0"
 					aria-label="Open <?php echo esc_attr( $title ); ?> gallery"
 				>
-					<?php if ( $img_url ) : ?>
 					<img
 						src="<?php echo esc_url( $img_url ); ?>"
 						alt="<?php echo esc_attr( $img_alt ); ?>"
 						class="gf-card-img"
 						loading="lazy"
 					/>
-					<?php else : ?>
-					<div class="gf-card-no-img"></div>
-					<?php endif; ?>
 
 					<div class="gf-card-overlay" aria-hidden="true"></div>
 
@@ -605,11 +643,7 @@ class Elementor_Widget extends Widget_Base {
 						<?php endif; ?>
 					</div>
 
-					<?php if ( $link_url ) :
-						$target = $is_external ? '_blank' : '_self';
-						$rel    = $nofollow ? 'nofollow' : '';
-						if ( $is_external ) $rel = trim( 'noopener noreferrer ' . $rel );
-					?>
+					<?php if ( $link_url ) : ?>
 					<a
 						href="<?php echo esc_url( $link_url ); ?>"
 						class="gf-arrow"
@@ -622,7 +656,9 @@ class Elementor_Widget extends Widget_Base {
 					<?php endif; ?>
 
 				</div>
-				<?php endforeach; ?>
+					<?php endforeach;
+					endif;
+				endforeach; ?>
 			</div><!-- .gf-grid -->
 
 			<!-- Lightbox (one per widget) -->
