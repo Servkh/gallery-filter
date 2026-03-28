@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name:       Gallery Filter
- * Plugin URI:        https://github.com/
+ * Plugin URI:        https://servkh.com/
  * Description:       A lightweight filterable gallery with Elementor widget support. Add projects, assign categories, and drop the widget anywhere on your page.
  * Version:           1.0.0
  * Requires at least: 5.8
