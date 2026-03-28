@@ -140,6 +140,16 @@ class Elementor_Widget extends Widget_Base {
 			'options' => [ '1' => '1', '2' => '2' ],
 		] );
 
+		$this->add_control( 'card_equal_height', [
+			'label'        => 'Equal Height Cards',
+			'type'         => Controls_Manager::SWITCHER,
+			'label_on'     => 'Yes',
+			'label_off'    => 'No',
+			'return_value' => 'yes',
+			'default'      => 'yes',
+			'description'  => 'Yes: all cards share a fixed height. No: cards size naturally to their image aspect ratio.',
+		] );
+
 		$this->add_control( 'card_height', [
 			'label'      => 'Card Height',
 			'type'       => Controls_Manager::SLIDER,
@@ -147,6 +157,22 @@ class Elementor_Widget extends Widget_Base {
 			'range'      => [ 'px' => [ 'min' => 150, 'max' => 800 ], 'vh' => [ 'min' => 10, 'max' => 80 ] ],
 			'default'    => [ 'unit' => 'px', 'size' => 450 ],
 			'selectors'  => [ '{{WRAPPER}} .gf-card' => 'height: {{SIZE}}{{UNIT}};' ],
+			'condition'  => [ 'card_equal_height' => 'yes' ],
+		] );
+
+		$this->add_control( 'card_aspect_ratio', [
+			'label'     => 'Aspect Ratio',
+			'type'      => Controls_Manager::SELECT,
+			'default'   => '16/9',
+			'options'   => [
+				'16/9'  => '16 : 9  (Landscape)',
+				'4/3'   => '4 : 3',
+				'3/2'   => '3 : 2',
+				'1/1'   => '1 : 1  (Square)',
+				'2/3'   => '2 : 3  (Portrait)',
+				'3/4'   => '3 : 4  (Portrait)',
+			],
+			'condition' => [ 'card_equal_height!' => 'yes' ],
 		] );
 
 		$this->end_controls_section();
@@ -753,6 +779,8 @@ class Elementor_Widget extends Widget_Base {
 		$columns_tablet = intval( $settings['columns_tablet'] );
 		$columns_mobile  = intval( $settings['columns_mobile'] );
 		$hover_zoom      = $settings['hover_zoom'] === 'yes' ? 'gf-zoom' : '';
+		$equal_height    = $settings['card_equal_height'] === 'yes';
+		$aspect_ratio    = ! empty( $settings['card_aspect_ratio'] ) ? $settings['card_aspect_ratio'] : '16/9';
 		$widget_id       = $this->get_id();
 		$close_icon_size = isset( $settings['lb_close_icon_size']['size'] ) && $settings['lb_close_icon_size']['size'] !== '' ? intval( $settings['lb_close_icon_size']['size'] ) : 18;
 		$nav_icon_size   = isset( $settings['lb_nav_icon_size']['size'] )   && $settings['lb_nav_icon_size']['size']   !== '' ? intval( $settings['lb_nav_icon_size']['size'] )   : 20;
@@ -766,6 +794,12 @@ class Elementor_Widget extends Widget_Base {
 				--gf-cols-tablet:  <?php echo $columns_tablet; ?>;
 				--gf-cols-mobile:  <?php echo $columns_mobile; ?>;
 			}
+			<?php if ( ! $equal_height ) : ?>
+			#gf-<?php echo $wid; ?> .gf-card {
+				height: auto !important;
+				aspect-ratio: <?php echo esc_attr( $aspect_ratio ); ?> !important;
+			}
+			<?php endif; ?>
 			#gf-<?php echo $wid; ?> .gf-lb-stage {
 				width:  <?php echo intval( $stage_w['size'] ) . esc_attr( $stage_w['unit'] ); ?> !important;
 				height: <?php echo intval( $stage_h['size'] ) . esc_attr( $stage_h['unit'] ); ?> !important;
