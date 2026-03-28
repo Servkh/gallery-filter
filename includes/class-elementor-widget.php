@@ -504,6 +504,30 @@ class Elementor_Widget extends Widget_Base {
 			'selectors' => [ '{{WRAPPER}} .gf-lightbox .gf-lb-img' => 'border-radius: {{SIZE}}{{UNIT}};' ],
 		] );
 
+		$this->add_control( 'lb_img_max_width', [
+			'label'     => 'Image Max Width',
+			'type'      => Controls_Manager::SLIDER,
+			'size_units'=> [ 'vw', 'px' ],
+			'range'     => [ 'vw' => [ 'min' => 20, 'max' => 100 ], 'px' => [ 'min' => 200, 'max' => 1800 ] ],
+			'default'   => [ 'unit' => 'vw', 'size' => 90 ],
+			'selectors' => [
+				'{{WRAPPER}} .gf-lightbox .gf-lb-img'   => 'max-width: {{SIZE}}{{UNIT}};',
+				'{{WRAPPER}} .gf-lightbox .gf-lb-stage' => 'max-width: {{SIZE}}{{UNIT}};',
+			],
+		] );
+
+		$this->add_control( 'lb_img_max_height', [
+			'label'     => 'Image Max Height',
+			'type'      => Controls_Manager::SLIDER,
+			'size_units'=> [ 'vh', 'px' ],
+			'range'     => [ 'vh' => [ 'min' => 20, 'max' => 100 ], 'px' => [ 'min' => 200, 'max' => 1200 ] ],
+			'default'   => [ 'unit' => 'vh', 'size' => 80 ],
+			'selectors' => [
+				'{{WRAPPER}} .gf-lightbox .gf-lb-img'   => 'max-height: {{SIZE}}{{UNIT}};',
+				'{{WRAPPER}} .gf-lightbox .gf-lb-stage' => 'max-height: {{SIZE}}{{UNIT}};',
+			],
+		] );
+
 		/* Close button */
 
 		$this->add_control( 'lb_close_heading', [
@@ -565,73 +589,56 @@ class Elementor_Widget extends Widget_Base {
 			],
 		] );
 
-		/* Prev / Next buttons */
+		/* Prev button */
 
-		$this->add_control( 'lb_nav_heading', [
-			'label'     => 'Prev / Next Buttons',
+		$this->add_control( 'lb_prev_heading', [
+			'label'     => 'Prev Button (Left)',
 			'type'      => Controls_Manager::HEADING,
 			'separator' => 'before',
 		] );
 
 		$this->add_control( 'lb_prev_icon', [
-			'label'   => 'Prev Icon',
+			'label'   => 'Icon',
 			'type'    => Controls_Manager::ICONS,
 			'default' => [ 'value' => 'eicon-chevron-left', 'library' => 'eicons' ],
 		] );
 
-		$this->add_control( 'lb_next_icon', [
-			'label'   => 'Next Icon',
-			'type'    => Controls_Manager::ICONS,
-			'default' => [ 'value' => 'eicon-chevron-right', 'library' => 'eicons' ],
-		] );
-
-		$this->add_control( 'lb_nav_bg', [
+		$this->add_control( 'lb_prev_bg', [
 			'label'     => 'Background',
 			'type'      => Controls_Manager::COLOR,
 			'default'   => 'rgba(255,255,255,0.12)',
-			'selectors' => [
-				'{{WRAPPER}} .gf-lightbox .gf-lb-prev' => 'background: {{VALUE}};',
-				'{{WRAPPER}} .gf-lightbox .gf-lb-next' => 'background: {{VALUE}};',
-			],
+			'selectors' => [ '{{WRAPPER}} .gf-lightbox .gf-lb-prev' => 'background: {{VALUE}};' ],
 		] );
 
-		$this->add_control( 'lb_nav_color', [
+		$this->add_control( 'lb_prev_color', [
 			'label'     => 'Icon Color',
 			'type'      => Controls_Manager::COLOR,
 			'default'   => '#ffffff',
 			'selectors' => [
 				'{{WRAPPER}} .gf-lightbox .gf-lb-prev'     => 'color: {{VALUE}};',
-				'{{WRAPPER}} .gf-lightbox .gf-lb-next'     => 'color: {{VALUE}};',
 				'{{WRAPPER}} .gf-lightbox .gf-lb-prev svg' => 'stroke: {{VALUE}};',
-				'{{WRAPPER}} .gf-lightbox .gf-lb-next svg' => 'stroke: {{VALUE}};',
 			],
 		] );
 
-		$this->add_control( 'lb_nav_size', [
+		$this->add_control( 'lb_prev_size', [
 			'label'     => 'Button Size',
 			'type'      => Controls_Manager::SLIDER,
 			'size_units'=> [ 'px' ],
-			'range'     => [ 'px' => [ 'min' => 28, 'max' => 80 ] ],
+			'range'     => [ 'px' => [ 'min' => 28, 'max' => 120 ] ],
 			'default'   => [ 'unit' => 'px', 'size' => 52 ],
-			'selectors' => [
-				'{{WRAPPER}} .gf-lightbox .gf-lb-prev' => 'width: {{SIZE}}{{UNIT}}; height: {{SIZE}}{{UNIT}};',
-				'{{WRAPPER}} .gf-lightbox .gf-lb-next' => 'width: {{SIZE}}{{UNIT}}; height: {{SIZE}}{{UNIT}};',
-			],
+			'selectors' => [ '{{WRAPPER}} .gf-lightbox .gf-lb-prev' => 'width: {{SIZE}}{{UNIT}}; height: {{SIZE}}{{UNIT}};' ],
 		] );
 
-		$this->add_control( 'lb_nav_radius', [
+		$this->add_control( 'lb_prev_radius', [
 			'label'     => 'Border Radius',
 			'type'      => Controls_Manager::SLIDER,
 			'size_units'=> [ 'px' ],
-			'range'     => [ 'px' => [ 'min' => 0, 'max' => 50 ] ],
+			'range'     => [ 'px' => [ 'min' => 0, 'max' => 60 ] ],
 			'default'   => [ 'unit' => 'px', 'size' => 50 ],
-			'selectors' => [
-				'{{WRAPPER}} .gf-lightbox .gf-lb-prev' => 'border-radius: {{SIZE}}{{UNIT}};',
-				'{{WRAPPER}} .gf-lightbox .gf-lb-next' => 'border-radius: {{SIZE}}{{UNIT}};',
-			],
+			'selectors' => [ '{{WRAPPER}} .gf-lightbox .gf-lb-prev' => 'border-radius: {{SIZE}}{{UNIT}};' ],
 		] );
 
-		$this->add_control( 'lb_nav_icon_size', [
+		$this->add_control( 'lb_prev_icon_size', [
 			'label'     => 'Icon Size',
 			'type'      => Controls_Manager::SLIDER,
 			'size_units'=> [ 'px' ],
@@ -639,8 +646,67 @@ class Elementor_Widget extends Widget_Base {
 			'default'   => [ 'unit' => 'px', 'size' => 20 ],
 			'selectors' => [
 				'{{WRAPPER}} .gf-lightbox .gf-lb-prev i'   => 'font-size: {{SIZE}}{{UNIT}};',
-				'{{WRAPPER}} .gf-lightbox .gf-lb-next i'   => 'font-size: {{SIZE}}{{UNIT}};',
 				'{{WRAPPER}} .gf-lightbox .gf-lb-prev svg' => 'width: {{SIZE}}{{UNIT}}; height: {{SIZE}}{{UNIT}};',
+			],
+		] );
+
+		/* Next button */
+
+		$this->add_control( 'lb_next_heading', [
+			'label'     => 'Next Button (Right)',
+			'type'      => Controls_Manager::HEADING,
+			'separator' => 'before',
+		] );
+
+		$this->add_control( 'lb_next_icon', [
+			'label'   => 'Icon',
+			'type'    => Controls_Manager::ICONS,
+			'default' => [ 'value' => 'eicon-chevron-right', 'library' => 'eicons' ],
+		] );
+
+		$this->add_control( 'lb_next_bg', [
+			'label'     => 'Background',
+			'type'      => Controls_Manager::COLOR,
+			'default'   => 'rgba(255,255,255,0.12)',
+			'selectors' => [ '{{WRAPPER}} .gf-lightbox .gf-lb-next' => 'background: {{VALUE}};' ],
+		] );
+
+		$this->add_control( 'lb_next_color', [
+			'label'     => 'Icon Color',
+			'type'      => Controls_Manager::COLOR,
+			'default'   => '#ffffff',
+			'selectors' => [
+				'{{WRAPPER}} .gf-lightbox .gf-lb-next'     => 'color: {{VALUE}};',
+				'{{WRAPPER}} .gf-lightbox .gf-lb-next svg' => 'stroke: {{VALUE}};',
+			],
+		] );
+
+		$this->add_control( 'lb_next_size', [
+			'label'     => 'Button Size',
+			'type'      => Controls_Manager::SLIDER,
+			'size_units'=> [ 'px' ],
+			'range'     => [ 'px' => [ 'min' => 28, 'max' => 120 ] ],
+			'default'   => [ 'unit' => 'px', 'size' => 52 ],
+			'selectors' => [ '{{WRAPPER}} .gf-lightbox .gf-lb-next' => 'width: {{SIZE}}{{UNIT}}; height: {{SIZE}}{{UNIT}};' ],
+		] );
+
+		$this->add_control( 'lb_next_radius', [
+			'label'     => 'Border Radius',
+			'type'      => Controls_Manager::SLIDER,
+			'size_units'=> [ 'px' ],
+			'range'     => [ 'px' => [ 'min' => 0, 'max' => 60 ] ],
+			'default'   => [ 'unit' => 'px', 'size' => 50 ],
+			'selectors' => [ '{{WRAPPER}} .gf-lightbox .gf-lb-next' => 'border-radius: {{SIZE}}{{UNIT}};' ],
+		] );
+
+		$this->add_control( 'lb_next_icon_size', [
+			'label'     => 'Icon Size',
+			'type'      => Controls_Manager::SLIDER,
+			'size_units'=> [ 'px' ],
+			'range'     => [ 'px' => [ 'min' => 10, 'max' => 48 ] ],
+			'default'   => [ 'unit' => 'px', 'size' => 20 ],
+			'selectors' => [
+				'{{WRAPPER}} .gf-lightbox .gf-lb-next i'   => 'font-size: {{SIZE}}{{UNIT}};',
 				'{{WRAPPER}} .gf-lightbox .gf-lb-next svg' => 'width: {{SIZE}}{{UNIT}}; height: {{SIZE}}{{UNIT}};',
 			],
 		] );
