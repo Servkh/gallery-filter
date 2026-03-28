@@ -522,7 +522,10 @@ class Elementor_Widget extends Widget_Base {
 			'label'     => 'Icon Color',
 			'type'      => Controls_Manager::COLOR,
 			'default'   => '#ffffff',
-			'selectors' => [ '{{WRAPPER}} .gf-lightbox .gf-lb-close' => 'color: {{VALUE}};' ],
+			'selectors' => [
+				'{{WRAPPER}} .gf-lightbox .gf-lb-close'     => 'color: {{VALUE}};',
+				'{{WRAPPER}} .gf-lightbox .gf-lb-close svg' => 'stroke: {{VALUE}};',
+			],
 		] );
 
 		$this->add_control( 'lb_close_size', [
@@ -566,8 +569,10 @@ class Elementor_Widget extends Widget_Base {
 			'type'      => Controls_Manager::COLOR,
 			'default'   => '#ffffff',
 			'selectors' => [
-				'{{WRAPPER}} .gf-lightbox .gf-lb-prev' => 'color: {{VALUE}};',
-				'{{WRAPPER}} .gf-lightbox .gf-lb-next' => 'color: {{VALUE}};',
+				'{{WRAPPER}} .gf-lightbox .gf-lb-prev'     => 'color: {{VALUE}};',
+				'{{WRAPPER}} .gf-lightbox .gf-lb-next'     => 'color: {{VALUE}};',
+				'{{WRAPPER}} .gf-lightbox .gf-lb-prev svg' => 'stroke: {{VALUE}};',
+				'{{WRAPPER}} .gf-lightbox .gf-lb-next svg' => 'stroke: {{VALUE}};',
 			],
 		] );
 
