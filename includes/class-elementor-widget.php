@@ -564,8 +564,6 @@ class Elementor_Widget extends Widget_Base {
 				'{{WRAPPER}} .gf-lightbox .gf-lb-close svg' => 'width: {{SIZE}}{{UNIT}}; height: {{SIZE}}{{UNIT}};',
 			],
 		] );
-			'selectors' => [ '{{WRAPPER}} .gf-lightbox .gf-lb-close' => 'border-radius: {{SIZE}}{{UNIT}};' ],
-		] );
 
 		/* Prev / Next buttons */
 
