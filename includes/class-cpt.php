@@ -196,7 +196,7 @@ class CPT {
 	public function render_admin_columns( $column, $post_id ) {
 		if ( $column === 'gf_thumb' ) {
 			$thumb = get_the_post_thumbnail( $post_id, [ 60, 60 ] );
-			echo $thumb ? '<div style="width:60px;height:60px;overflow:hidden;border-radius:4px;">' . $thumb . '</div>' : '—';
+			echo $thumb ? '<div style="width:60px;height:60px;overflow:hidden;border-radius:4px;">' . wp_kses_post( $thumb ) . '</div>' : '&mdash;';
 		}
 	}
 }
