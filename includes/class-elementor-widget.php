@@ -505,27 +505,21 @@ class Elementor_Widget extends Widget_Base {
 		] );
 
 		$this->add_control( 'lb_img_max_width', [
-			'label'     => 'Image Max Width',
+			'label'     => 'Image Width',
 			'type'      => Controls_Manager::SLIDER,
 			'size_units'=> [ 'vw', 'px' ],
 			'range'     => [ 'vw' => [ 'min' => 20, 'max' => 100 ], 'px' => [ 'min' => 200, 'max' => 1800 ] ],
 			'default'   => [ 'unit' => 'vw', 'size' => 90 ],
-			'selectors' => [
-				'{{WRAPPER}} .gf-lightbox .gf-lb-img'   => 'max-width: {{SIZE}}{{UNIT}};',
-				'{{WRAPPER}} .gf-lightbox .gf-lb-stage' => 'max-width: {{SIZE}}{{UNIT}};',
-			],
+			'selectors' => [ '{{WRAPPER}} .gf-lightbox .gf-lb-stage' => 'width: {{SIZE}}{{UNIT}};' ],
 		] );
 
 		$this->add_control( 'lb_img_max_height', [
-			'label'     => 'Image Max Height',
+			'label'     => 'Image Height',
 			'type'      => Controls_Manager::SLIDER,
 			'size_units'=> [ 'vh', 'px' ],
 			'range'     => [ 'vh' => [ 'min' => 20, 'max' => 100 ], 'px' => [ 'min' => 200, 'max' => 1200 ] ],
 			'default'   => [ 'unit' => 'vh', 'size' => 80 ],
-			'selectors' => [
-				'{{WRAPPER}} .gf-lightbox .gf-lb-img'   => 'max-height: {{SIZE}}{{UNIT}};',
-				'{{WRAPPER}} .gf-lightbox .gf-lb-stage' => 'max-height: {{SIZE}}{{UNIT}};',
-			],
+			'selectors' => [ '{{WRAPPER}} .gf-lightbox .gf-lb-stage' => 'height: {{SIZE}}{{UNIT}};' ],
 		] );
 
 		/* Close button */
