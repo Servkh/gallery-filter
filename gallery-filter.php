@@ -43,13 +43,13 @@ add_action( 'wp_enqueue_scripts', function () {
 		'gallery-filter',
 		GF_PLUGIN_URL . 'assets/css/gallery-filter.css',
 		[],
-		GF_VERSION
+		filemtime( GF_PLUGIN_DIR . 'assets/css/gallery-filter.css' )
 	);
 	wp_register_script(
 		'gallery-filter',
 		GF_PLUGIN_URL . 'assets/js/gallery-filter.js',
 		[],
-		GF_VERSION,
+		filemtime( GF_PLUGIN_DIR . 'assets/js/gallery-filter.js' ),
 		true
 	);
 } );
@@ -60,6 +60,6 @@ add_action( 'elementor/editor/after_enqueue_styles', function () {
 		'gallery-filter',
 		GF_PLUGIN_URL . 'assets/css/gallery-filter.css',
 		[],
-		GF_VERSION
+		filemtime( GF_PLUGIN_DIR . 'assets/css/gallery-filter.css' )
 	);
 } );
