@@ -776,12 +776,24 @@ class Elementor_Widget extends Widget_Base {
 		$hover_zoom     = $settings['hover_zoom'] === 'yes' ? 'gf-zoom' : '';
 		$widget_id      = $this->get_id();
 		?>
+		<?php
+		$close_icon_size = ! empty( $settings['lb_close_icon_size']['size'] ) ? intval( $settings['lb_close_icon_size']['size'] ) : 18;
+		$prev_icon_size  = ! empty( $settings['lb_prev_icon_size']['size'] )  ? intval( $settings['lb_prev_icon_size']['size'] )  : 20;
+		$next_icon_size  = ! empty( $settings['lb_next_icon_size']['size'] )  ? intval( $settings['lb_next_icon_size']['size'] )  : 20;
+		$wid             = esc_attr( $widget_id );
+		?>
 		<style>
-			#gf-<?php echo esc_attr( $widget_id ); ?> .gf-grid {
+			#gf-<?php echo $wid; ?> .gf-grid {
 				--gf-cols-desktop: <?php echo $columns; ?>;
 				--gf-cols-tablet:  <?php echo $columns_tablet; ?>;
 				--gf-cols-mobile:  <?php echo $columns_mobile; ?>;
 			}
+			#gf-<?php echo $wid; ?> .gf-lb-close i,
+			#gf-<?php echo $wid; ?> .gf-lb-close svg { font-size: <?php echo $close_icon_size; ?>px !important; width: <?php echo $close_icon_size; ?>px !important; height: <?php echo $close_icon_size; ?>px !important; }
+			#gf-<?php echo $wid; ?> .gf-lb-prev i,
+			#gf-<?php echo $wid; ?> .gf-lb-prev svg  { font-size: <?php echo $prev_icon_size; ?>px !important; width: <?php echo $prev_icon_size; ?>px !important; height: <?php echo $prev_icon_size; ?>px !important; }
+			#gf-<?php echo $wid; ?> .gf-lb-next i,
+			#gf-<?php echo $wid; ?> .gf-lb-next svg  { font-size: <?php echo $next_icon_size; ?>px !important; width: <?php echo $next_icon_size; ?>px !important; height: <?php echo $next_icon_size; ?>px !important; }
 		</style>
 
 		<div class="gf-wrapper" id="gf-<?php echo esc_attr( $widget_id ); ?>">
