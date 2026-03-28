@@ -553,6 +553,20 @@ class Elementor_Widget extends Widget_Base {
 			'selectors' => [ '{{WRAPPER}} .gf-lightbox .gf-lb-close' => 'border-radius: {{SIZE}}{{UNIT}};' ],
 		] );
 
+		$this->add_control( 'lb_close_icon_size', [
+			'label'     => 'Icon Size',
+			'type'      => Controls_Manager::SLIDER,
+			'size_units'=> [ 'px' ],
+			'range'     => [ 'px' => [ 'min' => 10, 'max' => 48 ] ],
+			'default'   => [ 'unit' => 'px', 'size' => 18 ],
+			'selectors' => [
+				'{{WRAPPER}} .gf-lightbox .gf-lb-close i'   => 'font-size: {{SIZE}}{{UNIT}};',
+				'{{WRAPPER}} .gf-lightbox .gf-lb-close svg' => 'width: {{SIZE}}{{UNIT}}; height: {{SIZE}}{{UNIT}};',
+			],
+		] );
+			'selectors' => [ '{{WRAPPER}} .gf-lightbox .gf-lb-close' => 'border-radius: {{SIZE}}{{UNIT}};' ],
+		] );
+
 		/* Prev / Next buttons */
 
 		$this->add_control( 'lb_nav_heading', [
@@ -616,6 +630,20 @@ class Elementor_Widget extends Widget_Base {
 			'selectors' => [
 				'{{WRAPPER}} .gf-lightbox .gf-lb-prev' => 'border-radius: {{SIZE}}{{UNIT}};',
 				'{{WRAPPER}} .gf-lightbox .gf-lb-next' => 'border-radius: {{SIZE}}{{UNIT}};',
+			],
+		] );
+
+		$this->add_control( 'lb_nav_icon_size', [
+			'label'     => 'Icon Size',
+			'type'      => Controls_Manager::SLIDER,
+			'size_units'=> [ 'px' ],
+			'range'     => [ 'px' => [ 'min' => 10, 'max' => 48 ] ],
+			'default'   => [ 'unit' => 'px', 'size' => 20 ],
+			'selectors' => [
+				'{{WRAPPER}} .gf-lightbox .gf-lb-prev i'   => 'font-size: {{SIZE}}{{UNIT}};',
+				'{{WRAPPER}} .gf-lightbox .gf-lb-next i'   => 'font-size: {{SIZE}}{{UNIT}};',
+				'{{WRAPPER}} .gf-lightbox .gf-lb-prev svg' => 'width: {{SIZE}}{{UNIT}}; height: {{SIZE}}{{UNIT}};',
+				'{{WRAPPER}} .gf-lightbox .gf-lb-next svg' => 'width: {{SIZE}}{{UNIT}}; height: {{SIZE}}{{UNIT}};',
 			],
 		] );
 
