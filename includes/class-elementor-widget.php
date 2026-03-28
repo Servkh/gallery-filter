@@ -19,11 +19,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class Elementor_Widget extends Widget_Base {
 
-	public function get_name()       { return 'gallery_filter'; }
-	public function get_title()      { return 'Gallery Filter'; }
-	public function get_icon()       { return 'eicon-gallery-masonry'; }
-	public function get_categories() { return [ 'general' ]; }
-	public function get_keywords()   { return [ 'gallery', 'filter', 'portfolio', 'projects', 'grid', 'images' ]; }
+	public function get_name()        { return 'gallery_filter'; }
+	public function get_title()       { return 'Gallery Filter'; }
+	public function get_icon()        { return 'eicon-gallery-masonry'; }
+	public function get_categories()  { return [ 'general' ]; }
+	public function get_keywords()    { return [ 'gallery', 'filter', 'portfolio', 'projects', 'grid', 'images' ]; }
+	public function get_style_depends()  { return [ 'gallery-filter' ]; }
+	public function get_script_depends() { return [ 'gallery-filter' ]; }
 
 	// ── Controls ──────────────────────────────────────────────────────────────
 
@@ -500,9 +502,6 @@ class Elementor_Widget extends Widget_Base {
 				$categories[ $slug ] = $cat;
 			}
 		}
-
-		wp_enqueue_style( 'gallery-filter' );
-		wp_enqueue_script( 'gallery-filter' );
 
 		$columns        = intval( $settings['columns'] );
 		$columns_tablet = intval( $settings['columns_tablet'] );
