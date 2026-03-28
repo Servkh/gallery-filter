@@ -479,6 +479,157 @@ class Elementor_Widget extends Widget_Base {
 		] );
 
 		$this->end_controls_section();
+
+		/* ── Lightbox Style ── */
+
+		$this->start_controls_section( 'section_lightbox_style', [
+			'label' => 'Lightbox',
+			'tab'   => Controls_Manager::TAB_STYLE,
+		] );
+
+		$this->add_control( 'lb_backdrop_color', [
+			'label'     => 'Backdrop Color',
+			'type'      => Controls_Manager::COLOR,
+			'default'   => 'rgba(0,0,0,0.92)',
+			'selectors' => [ '{{WRAPPER}} .gf-lb-backdrop' => 'background: {{VALUE}};' ],
+		] );
+
+		$this->add_control( 'lb_img_radius', [
+			'label'     => 'Image Border Radius',
+			'type'      => Controls_Manager::SLIDER,
+			'size_units'=> [ 'px' ],
+			'range'     => [ 'px' => [ 'min' => 0, 'max' => 40 ] ],
+			'default'   => [ 'unit' => 'px', 'size' => 6 ],
+			'selectors' => [ '{{WRAPPER}} .gf-lb-img' => 'border-radius: {{SIZE}}{{UNIT}};' ],
+		] );
+
+		/* Close button */
+
+		$this->add_control( 'lb_close_heading', [
+			'label'     => 'Close Button',
+			'type'      => Controls_Manager::HEADING,
+			'separator' => 'before',
+		] );
+
+		$this->add_control( 'lb_close_bg', [
+			'label'     => 'Background',
+			'type'      => Controls_Manager::COLOR,
+			'default'   => 'rgba(255,255,255,0.12)',
+			'selectors' => [ '{{WRAPPER}} .gf-lb-close' => 'background: {{VALUE}};' ],
+		] );
+
+		$this->add_control( 'lb_close_color', [
+			'label'     => 'Icon Color',
+			'type'      => Controls_Manager::COLOR,
+			'default'   => '#ffffff',
+			'selectors' => [ '{{WRAPPER}} .gf-lb-close' => 'color: {{VALUE}};' ],
+		] );
+
+		$this->add_control( 'lb_close_size', [
+			'label'     => 'Button Size',
+			'type'      => Controls_Manager::SLIDER,
+			'size_units'=> [ 'px' ],
+			'range'     => [ 'px' => [ 'min' => 28, 'max' => 72 ] ],
+			'default'   => [ 'unit' => 'px', 'size' => 44 ],
+			'selectors' => [ '{{WRAPPER}} .gf-lb-close' => 'width: {{SIZE}}{{UNIT}}; height: {{SIZE}}{{UNIT}};' ],
+		] );
+
+		$this->add_control( 'lb_close_radius', [
+			'label'     => 'Border Radius',
+			'type'      => Controls_Manager::SLIDER,
+			'size_units'=> [ 'px' ],
+			'range'     => [ 'px' => [ 'min' => 0, 'max' => 50 ] ],
+			'default'   => [ 'unit' => 'px', 'size' => 50 ],
+			'selectors' => [ '{{WRAPPER}} .gf-lb-close' => 'border-radius: {{SIZE}}{{UNIT}};' ],
+		] );
+
+		/* Prev / Next buttons */
+
+		$this->add_control( 'lb_nav_heading', [
+			'label'     => 'Prev / Next Buttons',
+			'type'      => Controls_Manager::HEADING,
+			'separator' => 'before',
+		] );
+
+		$this->add_control( 'lb_nav_bg', [
+			'label'     => 'Background',
+			'type'      => Controls_Manager::COLOR,
+			'default'   => 'rgba(255,255,255,0.12)',
+			'selectors' => [
+				'{{WRAPPER}} .gf-lb-prev' => 'background: {{VALUE}};',
+				'{{WRAPPER}} .gf-lb-next' => 'background: {{VALUE}};',
+			],
+		] );
+
+		$this->add_control( 'lb_nav_color', [
+			'label'     => 'Icon Color',
+			'type'      => Controls_Manager::COLOR,
+			'default'   => '#ffffff',
+			'selectors' => [
+				'{{WRAPPER}} .gf-lb-prev' => 'color: {{VALUE}};',
+				'{{WRAPPER}} .gf-lb-next' => 'color: {{VALUE}};',
+			],
+		] );
+
+		$this->add_control( 'lb_nav_size', [
+			'label'     => 'Button Size',
+			'type'      => Controls_Manager::SLIDER,
+			'size_units'=> [ 'px' ],
+			'range'     => [ 'px' => [ 'min' => 28, 'max' => 80 ] ],
+			'default'   => [ 'unit' => 'px', 'size' => 52 ],
+			'selectors' => [
+				'{{WRAPPER}} .gf-lb-prev' => 'width: {{SIZE}}{{UNIT}}; height: {{SIZE}}{{UNIT}};',
+				'{{WRAPPER}} .gf-lb-next' => 'width: {{SIZE}}{{UNIT}}; height: {{SIZE}}{{UNIT}};',
+			],
+		] );
+
+		$this->add_control( 'lb_nav_radius', [
+			'label'     => 'Border Radius',
+			'type'      => Controls_Manager::SLIDER,
+			'size_units'=> [ 'px' ],
+			'range'     => [ 'px' => [ 'min' => 0, 'max' => 50 ] ],
+			'default'   => [ 'unit' => 'px', 'size' => 50 ],
+			'selectors' => [
+				'{{WRAPPER}} .gf-lb-prev' => 'border-radius: {{SIZE}}{{UNIT}};',
+				'{{WRAPPER}} .gf-lb-next' => 'border-radius: {{SIZE}}{{UNIT}};',
+			],
+		] );
+
+		/* Footer */
+
+		$this->add_control( 'lb_footer_heading', [
+			'label'     => 'Footer',
+			'type'      => Controls_Manager::HEADING,
+			'separator' => 'before',
+		] );
+
+		$this->add_control( 'lb_footer_bg', [
+			'label'     => 'Background',
+			'type'      => Controls_Manager::COLOR,
+			'default'   => 'rgba(0,0,0,0.7)',
+			'selectors' => [ '{{WRAPPER}} .gf-lb-footer' => 'background: linear-gradient(to top, {{VALUE}} 0%, transparent 100%);' ],
+		] );
+
+		$this->add_control( 'lb_title_color', [
+			'label'     => 'Title Color',
+			'type'      => Controls_Manager::COLOR,
+			'default'   => '#ffffff',
+			'selectors' => [ '{{WRAPPER}} .gf-lb-title' => 'color: {{VALUE}};' ],
+		] );
+
+		$this->add_group_control( Group_Control_Typography::get_type(), [
+			'name'     => 'lb_title_typography',
+			'selector' => '{{WRAPPER}} .gf-lb-title',
+		] );
+
+		$this->add_control( 'lb_counter_color', [
+			'label'     => 'Counter Color',
+			'type'      => Controls_Manager::COLOR,
+			'default'   => 'rgba(255,255,255,0.75)',
+			'selectors' => [ '{{WRAPPER}} .gf-lb-counter' => 'color: {{VALUE}};' ],
+		] );
+
+		$this->end_controls_section();
 	}
 
 	// ── Render ────────────────────────────────────────────────────────────────
