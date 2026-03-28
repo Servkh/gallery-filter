@@ -178,10 +178,18 @@
 	}
 
 	// Re-init after Elementor renders widget in editor
-	if ( window.elementorFrontend ) {
+	function addElementorHook() {
 		window.elementorFrontend.hooks.addAction(
 			'frontend/element_ready/gallery_filter.default',
 			function ( $scope ) { initWrapper( $scope[0] ); }
 		);
+	}
+
+	if ( window.elementorFrontend ) {
+		if ( window.elementorFrontend.isInitialized ) {
+			addElementorHook();
+		} else {
+			window.addEventListener( 'elementor/frontend/init', addElementorHook );
+		}
 	}
 } )();
