@@ -306,16 +306,23 @@ body.gf-lb-open {
 	opacity: 1;
 }
 
-/* Icon sizing inside lightbox buttons */
+/* Icon sizing inside lightbox buttons — explicit px so button size changes don't affect icon */
 .gf-lightbox .gf-lb-close i,
-.gf-lightbox .gf-lb-close svg,
+.gf-lightbox .gf-lb-close svg {
+	font-size: 18px;
+	width: 18px;
+	height: 18px;
+	display: block;
+	pointer-events: none;
+}
+
 .gf-lightbox .gf-lb-prev i,
 .gf-lightbox .gf-lb-prev svg,
 .gf-lightbox .gf-lb-next i,
 .gf-lightbox .gf-lb-next svg {
-	font-size: 1.1em;
-	width: 1.1em;
-	height: 1.1em;
+	font-size: 20px;
+	width: 20px;
+	height: 20px;
 	display: block;
 	pointer-events: none;
 }
