@@ -751,11 +751,13 @@ class Elementor_Widget extends Widget_Base {
 
 		$columns        = intval( $settings['columns'] );
 		$columns_tablet = intval( $settings['columns_tablet'] );
-		$columns_mobile = intval( $settings['columns_mobile'] );
-		$hover_zoom     = $settings['hover_zoom'] === 'yes' ? 'gf-zoom' : '';
-		$widget_id      = $this->get_id();
+		$columns_mobile  = intval( $settings['columns_mobile'] );
+		$hover_zoom      = $settings['hover_zoom'] === 'yes' ? 'gf-zoom' : '';
+		$widget_id       = $this->get_id();
 		$close_icon_size = isset( $settings['lb_close_icon_size']['size'] ) && $settings['lb_close_icon_size']['size'] !== '' ? intval( $settings['lb_close_icon_size']['size'] ) : 18;
 		$nav_icon_size   = isset( $settings['lb_nav_icon_size']['size'] )   && $settings['lb_nav_icon_size']['size']   !== '' ? intval( $settings['lb_nav_icon_size']['size'] )   : 20;
+		$stage_w         = isset( $settings['lb_img_max_width']['size']  )  && $settings['lb_img_max_width']['size']   !== '' ? $settings['lb_img_max_width']  : [ 'size' => 90,  'unit' => 'vw' ];
+		$stage_h         = isset( $settings['lb_img_max_height']['size'] )  && $settings['lb_img_max_height']['size']  !== '' ? $settings['lb_img_max_height'] : [ 'size' => 80,  'unit' => 'vh' ];
 		$wid             = esc_attr( $widget_id );
 		?>
 		<style>
@@ -763,6 +765,15 @@ class Elementor_Widget extends Widget_Base {
 				--gf-cols-desktop: <?php echo $columns; ?>;
 				--gf-cols-tablet:  <?php echo $columns_tablet; ?>;
 				--gf-cols-mobile:  <?php echo $columns_mobile; ?>;
+			}
+			#gf-<?php echo $wid; ?> .gf-lb-stage {
+				width:  <?php echo intval( $stage_w['size'] ) . esc_attr( $stage_w['unit'] ); ?> !important;
+				height: <?php echo intval( $stage_h['size'] ) . esc_attr( $stage_h['unit'] ); ?> !important;
+			}
+			#gf-<?php echo $wid; ?> .gf-lb-img {
+				width: 100% !important;
+				height: 100% !important;
+				object-fit: contain !important;
 			}
 			#gf-<?php echo $wid; ?> .gf-lb-close i,
 			#gf-<?php echo $wid; ?> .gf-lb-close svg { font-size: <?php echo $close_icon_size; ?>px !important; width: <?php echo $close_icon_size; ?>px !important; height: <?php echo $close_icon_size; ?>px !important; }
