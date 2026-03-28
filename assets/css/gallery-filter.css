@@ -306,6 +306,20 @@ body.gf-lb-open {
 	opacity: 1;
 }
 
+/* Icon sizing inside lightbox buttons */
+.gf-lightbox .gf-lb-close i,
+.gf-lightbox .gf-lb-close svg,
+.gf-lightbox .gf-lb-prev i,
+.gf-lightbox .gf-lb-prev svg,
+.gf-lightbox .gf-lb-next i,
+.gf-lightbox .gf-lb-next svg {
+	font-size: 1.1em;
+	width: 1.1em;
+	height: 1.1em;
+	display: block;
+	pointer-events: none;
+}
+
 /* Close button */
 .gf-lightbox .gf-lb-close {
 	position: fixed;

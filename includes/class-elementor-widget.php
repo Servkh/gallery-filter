@@ -9,6 +9,7 @@ namespace GalleryFilter;
 
 use Elementor\Widget_Base;
 use Elementor\Controls_Manager;
+use Elementor\Icons_Manager;
 use Elementor\Repeater;
 use Elementor\Group_Control_Typography;
 use Elementor\Group_Control_Box_Shadow;
@@ -511,6 +512,12 @@ class Elementor_Widget extends Widget_Base {
 			'separator' => 'before',
 		] );
 
+		$this->add_control( 'lb_close_icon', [
+			'label'   => 'Icon',
+			'type'    => Controls_Manager::ICONS,
+			'default' => [ 'value' => 'eicon-close', 'library' => 'eicons' ],
+		] );
+
 		$this->add_control( 'lb_close_bg', [
 			'label'     => 'Background',
 			'type'      => Controls_Manager::COLOR,
@@ -552,6 +559,18 @@ class Elementor_Widget extends Widget_Base {
 			'label'     => 'Prev / Next Buttons',
 			'type'      => Controls_Manager::HEADING,
 			'separator' => 'before',
+		] );
+
+		$this->add_control( 'lb_prev_icon', [
+			'label'   => 'Prev Icon',
+			'type'    => Controls_Manager::ICONS,
+			'default' => [ 'value' => 'eicon-chevron-left', 'library' => 'eicons' ],
+		] );
+
+		$this->add_control( 'lb_next_icon', [
+			'label'   => 'Next Icon',
+			'type'    => Controls_Manager::ICONS,
+			'default' => [ 'value' => 'eicon-chevron-right', 'library' => 'eicons' ],
 		] );
 
 		$this->add_control( 'lb_nav_bg', [
@@ -821,13 +840,13 @@ class Elementor_Widget extends Widget_Base {
 			<div class="gf-lightbox" role="dialog" aria-modal="true" aria-label="Image gallery" hidden>
 				<div class="gf-lb-backdrop"></div>
 				<button class="gf-lb-close" aria-label="Close gallery">
-					<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+					<?php Icons_Manager::render_icon( $settings['lb_close_icon'], [ 'aria-hidden' => 'true' ] ); ?>
 				</button>
 				<button class="gf-lb-prev" aria-label="Previous image">
-					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+					<?php Icons_Manager::render_icon( $settings['lb_prev_icon'], [ 'aria-hidden' => 'true' ] ); ?>
 				</button>
 				<button class="gf-lb-next" aria-label="Next image">
-					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+					<?php Icons_Manager::render_icon( $settings['lb_next_icon'], [ 'aria-hidden' => 'true' ] ); ?>
 				</button>
 				<div class="gf-lb-stage">
 					<img class="gf-lb-img" src="" alt="" />
