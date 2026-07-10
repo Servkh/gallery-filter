@@ -31,11 +31,53 @@ class Elementor_Widget extends Widget_Base {
 
 		/* ────────── CONTENT TAB ────────── */
 
+		/* ── Source ── */
+
+		$this->start_controls_section( 'section_source', [
+			'label' => 'Source',
+			'tab'   => Controls_Manager::TAB_CONTENT,
+		] );
+
+		$this->add_control( 'source', [
+			'label'       => 'Content Source',
+			'type'        => Controls_Manager::SELECT,
+			'default'     => 'cpt',
+			'options'     => [
+				'cpt'    => 'Gallery Projects (managed in WP Admin)',
+				'manual' => 'Manual items (entered below)',
+			],
+			'description' => 'Pull projects from the Gallery Filter post type, or enter items by hand in this widget.',
+		] );
+
+		$this->add_control( 'cpt_limit', [
+			'label'       => 'Number of Projects',
+			'type'        => Controls_Manager::NUMBER,
+			'default'     => 0,
+			'min'         => 0,
+			'description' => '0 = show all published projects.',
+			'condition'   => [ 'source' => 'cpt' ],
+		] );
+
+		$this->add_control( 'cpt_orderby', [
+			'label'     => 'Order By',
+			'type'      => Controls_Manager::SELECT,
+			'default'   => 'date',
+			'options'   => [
+				'date'       => 'Newest first',
+				'menu_order' => 'Manual order (Page Attributes → Order)',
+				'title'      => 'Title (A–Z)',
+			],
+			'condition' => [ 'source' => 'cpt' ],
+		] );
+
+		$this->end_controls_section();
+
 		/* ── Gallery Items (Repeater) ── */
 
 		$this->start_controls_section( 'section_items', [
-			'label' => 'Gallery Items',
-			'tab'   => Controls_Manager::TAB_CONTENT,
+			'label'     => 'Gallery Items',
+			'tab'       => Controls_Manager::TAB_CONTENT,
+			'condition' => [ 'source' => 'manual' ],
 		] );
 
 		$repeater = new Repeater();
@@ -70,6 +112,14 @@ class Elementor_Widget extends Widget_Base {
 			'placeholder' => 'e.g. Drainage, Driveway',
 			'description' => 'Comma-separated labels shown on the card.',
 			'label_block' => true,
+		] );
+
+		$repeater->add_control( 'description', [
+			'label'       => 'Description',
+			'type'        => Controls_Manager::TEXTAREA,
+			'rows'        => 4,
+			'default'     => '',
+			'description' => 'Shown in the lightbox when the project is opened.',
 		] );
 
 		$repeater->add_control( 'link', [
@@ -483,21 +533,26 @@ class Elementor_Widget extends Widget_Base {
 
 	protected function render() {
 		$settings = $this->get_settings_for_display();
-		$items    = $settings['gallery_items'];
+		$source   = ! empty( $settings['source'] ) ? $settings['source'] : 'cpt';
+		$items    = $source === 'manual'
+			? $this->get_manual_items( $settings )
+			: $this->get_cpt_items( $settings );
 
 		if ( empty( $items ) ) {
-			echo '<p class="gf-no-results">No items yet — add some in the widget panel.</p>';
+			if ( $source === 'cpt' ) {
+				echo '<p class="gf-no-results">No projects yet — add some under <strong>Gallery Filter → Add New Project</strong> in your dashboard.</p>';
+			} else {
+				echo '<p class="gf-no-results">No items yet — add some in the widget panel.</p>';
+			}
 			return;
 		}
 
 		// Build ordered unique category list (preserving first-seen order)
 		$categories = [];
 		foreach ( $items as $item ) {
-			$cat = trim( $item['category'] );
-			if ( $cat === '' ) continue;
-			$slug = sanitize_title( $cat );
-			if ( ! isset( $categories[ $slug ] ) ) {
-				$categories[ $slug ] = $cat;
+			if ( $item['cat_slug'] === '' ) continue;
+			if ( ! isset( $categories[ $item['cat_slug'] ] ) ) {
+				$categories[ $item['cat_slug'] ] = $item['category'];
 			}
 		}
 
@@ -535,39 +590,26 @@ class Elementor_Widget extends Widget_Base {
 
 			<div class="gf-grid">
 				<?php foreach ( $items as $item ) :
-					$images      = ! empty( $item['images'] ) ? $item['images'] : [];
-					$first_img   = ! empty( $images[0] ) ? $images[0] : [];
-					$img_url     = ! empty( $first_img['url'] ) ? $first_img['url'] : '';
-					$img_alt     = ! empty( $first_img['alt'] ) ? $first_img['alt'] : $item['title'];
-					$title       = $item['title'];
-					$cat_name    = trim( $item['category'] );
-					$cat_slug    = sanitize_title( $cat_name );
-					$tags_raw    = $item['tags'];
-					$tags        = ! empty( $tags_raw ) ? array_filter( array_map( 'trim', explode( ',', $tags_raw ) ) ) : [];
-					$link_url    = ! empty( $item['link']['url'] ) ? $item['link']['url'] : '';
-					$is_external = ! empty( $item['link']['is_external'] );
-					$nofollow    = ! empty( $item['link']['nofollow'] );
-					$img_count   = count( $images );
-
-					// Build gallery JSON for the lightbox
-					$gallery_data = [];
-					foreach ( $images as $img ) {
-						if ( empty( $img['url'] ) ) continue;
-						$gallery_data[] = [
-							'url' => $img['url'],
-							'alt' => ! empty( $img['alt'] ) ? $img['alt'] : $title,
-						];
-					}
-					$gallery_json = wp_json_encode( $gallery_data );
+					$images       = $item['images'];
+					$img_url      = ! empty( $images[0]['url'] ) ? $images[0]['url'] : '';
+					$img_alt      = ! empty( $images[0]['alt'] ) ? $images[0]['alt'] : $item['title'];
+					$title        = $item['title'];
+					$cat_name     = $item['category'];
+					$cat_slug     = $item['cat_slug'];
+					$tags         = $item['tags'];
+					$description  = $item['description'];
+					$link         = $item['link'];
+					$img_count    = count( $images );
+					$has_gallery  = $img_count > 0;
+					$gallery_json = wp_json_encode( $images );
 				?>
 				<div
-					class="gf-card <?php echo esc_attr( $hover_zoom ); ?><?php echo $img_count > 0 ? ' gf-has-gallery' : ''; ?>"
+					class="gf-card <?php echo esc_attr( $hover_zoom ); ?><?php echo $has_gallery ? ' gf-has-gallery' : ''; ?>"
 					data-categories="<?php echo esc_attr( $cat_slug ); ?>"
 					data-title="<?php echo esc_attr( $title ); ?>"
+					data-description="<?php echo esc_attr( $description ); ?>"
 					data-gallery="<?php echo esc_attr( $gallery_json ); ?>"
-					role="button"
-					tabindex="0"
-					aria-label="Open <?php echo esc_attr( $title ); ?> gallery"
+					<?php if ( $has_gallery ) : ?>role="button" tabindex="0" aria-label="Open <?php echo esc_attr( $title ); ?> gallery"<?php endif; ?>
 				>
 					<?php if ( $img_url ) : ?>
 					<img
@@ -606,16 +648,12 @@ class Elementor_Widget extends Widget_Base {
 						<?php endif; ?>
 					</div>
 
-					<?php if ( $link_url ) :
-						$target = $is_external ? '_blank' : '_self';
-						$rel    = $nofollow ? 'nofollow' : '';
-						if ( $is_external ) $rel = trim( 'noopener noreferrer ' . $rel );
-					?>
+					<?php if ( $link['url'] ) : ?>
 					<a
-						href="<?php echo esc_url( $link_url ); ?>"
+						href="<?php echo esc_url( $link['url'] ); ?>"
 						class="gf-arrow"
-						target="<?php echo esc_attr( $target ); ?>"
-						<?php if ( $rel ) echo 'rel="' . esc_attr( $rel ) . '"'; ?>
+						target="<?php echo esc_attr( $link['target'] ); ?>"
+						<?php if ( $link['rel'] ) echo 'rel="' . esc_attr( $link['rel'] ) . '"'; ?>
 						aria-label="Visit <?php echo esc_attr( $title ); ?>"
 					><?php echo $this->get_arrow_svg(); ?></a>
 					<?php else : ?>
@@ -642,13 +680,168 @@ class Elementor_Widget extends Widget_Base {
 					<img class="gf-lb-img" src="" alt="" />
 				</div>
 				<div class="gf-lb-footer">
-					<span class="gf-lb-title"></span>
+					<div class="gf-lb-text">
+						<span class="gf-lb-title"></span>
+						<p class="gf-lb-desc"></p>
+					</div>
 					<span class="gf-lb-counter"></span>
 				</div>
 			</div><!-- .gf-lightbox -->
 
 		</div><!-- .gf-wrapper -->
 		<?php
+	}
+
+	// ── Item Sources ────────────────────────────────────────────────────────────
+
+	/**
+	 * Normalize a link into url / target / rel.
+	 */
+	private function normalize_link( $url, $is_external, $nofollow = false ) {
+		$url = ! empty( $url ) ? $url : '';
+		if ( ! $url ) {
+			return [ 'url' => '', 'target' => '_self', 'rel' => '' ];
+		}
+		$target = $is_external ? '_blank' : '_self';
+		$rel    = $nofollow ? 'nofollow' : '';
+		if ( $is_external ) {
+			$rel = trim( 'noopener noreferrer ' . $rel );
+		}
+		return [ 'url' => $url, 'target' => $target, 'rel' => $rel ];
+	}
+
+	/**
+	 * Normalized items from the manual repeater.
+	 */
+	private function get_manual_items( $settings ) {
+		$raw   = ! empty( $settings['gallery_items'] ) ? $settings['gallery_items'] : [];
+		$items = [];
+
+		foreach ( $raw as $item ) {
+			$title = isset( $item['title'] ) ? $item['title'] : '';
+
+			$images = [];
+			if ( ! empty( $item['images'] ) ) {
+				foreach ( $item['images'] as $img ) {
+					if ( empty( $img['url'] ) ) continue;
+					$images[] = [
+						'url' => $img['url'],
+						'alt' => ! empty( $img['alt'] ) ? $img['alt'] : $title,
+					];
+				}
+			}
+
+			$cat      = isset( $item['category'] ) ? trim( $item['category'] ) : '';
+			$tags_raw = isset( $item['tags'] ) ? $item['tags'] : '';
+			$tags     = $tags_raw !== '' ? array_filter( array_map( 'trim', explode( ',', $tags_raw ) ) ) : [];
+
+			$link = $this->normalize_link(
+				! empty( $item['link']['url'] ) ? $item['link']['url'] : '',
+				! empty( $item['link']['is_external'] ),
+				! empty( $item['link']['nofollow'] )
+			);
+
+			$items[] = [
+				'title'       => $title,
+				'category'    => $cat,
+				'cat_slug'    => sanitize_title( $cat ),
+				'tags'        => array_values( $tags ),
+				'description' => isset( $item['description'] ) ? $item['description'] : '',
+				'link'        => $link,
+				'images'      => $images,
+			];
+		}
+
+		return $items;
+	}
+
+	/**
+	 * Normalized items from the gf_project post type.
+	 */
+	private function get_cpt_items( $settings ) {
+		$limit   = isset( $settings['cpt_limit'] ) ? intval( $settings['cpt_limit'] ) : 0;
+		$orderby = isset( $settings['cpt_orderby'] ) ? $settings['cpt_orderby'] : 'date';
+
+		$args = [
+			'post_type'      => 'gf_project',
+			'post_status'    => 'publish',
+			'posts_per_page' => $limit > 0 ? $limit : -1,
+			'no_found_rows'  => true,
+		];
+
+		if ( $orderby === 'title' ) {
+			$args['orderby'] = 'title';
+			$args['order']   = 'ASC';
+		} elseif ( $orderby === 'menu_order' ) {
+			$args['orderby'] = [ 'menu_order' => 'ASC', 'date' => 'DESC' ];
+		} else {
+			$args['orderby'] = 'date';
+			$args['order']   = 'DESC';
+		}
+
+		$query = new \WP_Query( $args );
+		$items = [];
+
+		foreach ( $query->posts as $post ) {
+			$pid   = $post->ID;
+			$title = get_the_title( $pid );
+
+			// Images: featured image first, then the gallery meta (deduped).
+			$ids  = [];
+			$feat = get_post_thumbnail_id( $pid );
+			if ( $feat ) {
+				$ids[] = (int) $feat;
+			}
+			$gallery = get_post_meta( $pid, '_gf_gallery', true );
+			if ( is_array( $gallery ) ) {
+				$ids = array_merge( $ids, array_map( 'intval', $gallery ) );
+			}
+
+			$images = [];
+			$seen   = [];
+			foreach ( $ids as $aid ) {
+				if ( ! $aid || isset( $seen[ $aid ] ) ) continue;
+				$seen[ $aid ] = true;
+				$url = wp_get_attachment_image_url( $aid, 'large' );
+				if ( ! $url ) continue;
+				$alt      = get_post_meta( $aid, '_wp_attachment_image_alt', true );
+				$images[] = [
+					'url' => $url,
+					'alt' => $alt !== '' ? $alt : $title,
+				];
+			}
+
+			// Category — first assigned term.
+			$cat      = '';
+			$cat_slug = '';
+			$terms    = get_the_terms( $pid, 'gf_category' );
+			if ( $terms && ! is_wp_error( $terms ) ) {
+				$cat      = $terms[0]->name;
+				$cat_slug = $terms[0]->slug;
+			}
+
+			$tags_raw = get_post_meta( $pid, '_gf_tags', true );
+			$tags     = $tags_raw ? array_filter( array_map( 'trim', explode( ',', $tags_raw ) ) ) : [];
+
+			$link = $this->normalize_link(
+				get_post_meta( $pid, '_gf_link', true ),
+				get_post_meta( $pid, '_gf_link_target', true ) !== '_self'
+			);
+
+			$items[] = [
+				'title'       => $title,
+				'category'    => $cat,
+				'cat_slug'    => $cat_slug,
+				'tags'        => array_values( $tags ),
+				'description' => trim( wp_strip_all_tags( $post->post_content ) ),
+				'link'        => $link,
+				'images'      => $images,
+			];
+		}
+
+		wp_reset_postdata();
+
+		return $items;
 	}
 
 	private function get_arrow_svg() {

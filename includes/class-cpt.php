@@ -18,6 +18,7 @@ class CPT {
 		add_action( 'init',             [ $this, 'register_taxonomy' ] );
 		add_action( 'add_meta_boxes',   [ $this, 'add_meta_boxes' ] );
 		add_action( 'save_post',        [ $this, 'save_meta' ] );
+		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_admin_assets' ] );
 		add_filter( 'manage_gf_project_posts_columns',       [ $this, 'add_admin_columns' ] );
 		add_action( 'manage_gf_project_posts_custom_column', [ $this, 'render_admin_columns' ], 10, 2 );
 	}
@@ -41,15 +42,18 @@ class CPT {
 		];
 
 		register_post_type( 'gf_project', [
-			'labels'       => $labels,
-			'public'       => true,
-			'show_in_menu' => true,
-			'menu_icon'    => 'dashicons-format-gallery',
-			'menu_position'=> 25,
-			'supports'     => [ 'title', 'thumbnail' ],
-			'has_archive'  => false,
-			'rewrite'      => [ 'slug' => 'gallery-project' ],
-			'show_in_rest' => true, // Gutenberg / REST compatibility
+			'labels'            => $labels,
+			'public'            => false,
+			'show_ui'           => true,
+			'publicly_queryable'=> false,
+			'exclude_from_search' => true,
+			'show_in_menu'      => true,
+			'menu_icon'         => 'dashicons-format-gallery',
+			'menu_position'     => 25,
+			'supports'          => [ 'title', 'editor', 'thumbnail', 'page-attributes' ],
+			'has_archive'       => false,
+			'rewrite'           => false,
+			'show_in_rest'      => true, // Gutenberg / REST compatibility
 		] );
 	}
 
@@ -74,9 +78,30 @@ class CPT {
 			'show_ui'           => true,
 			'show_admin_column' => true,
 			'query_var'         => true,
-			'rewrite'           => [ 'slug' => 'gallery-category' ],
+			'publicly_queryable'=> false,
+			'rewrite'           => false,
 			'show_in_rest'      => true,
 		] );
+	}
+
+	// ── Admin Assets ──────────────────────────────────────────────────────────
+
+	public function enqueue_admin_assets( $hook ) {
+		if ( $hook !== 'post.php' && $hook !== 'post-new.php' ) {
+			return;
+		}
+		$screen = get_current_screen();
+		if ( ! $screen || $screen->post_type !== 'gf_project' ) {
+			return;
+		}
+		wp_enqueue_media();
+		wp_enqueue_script(
+			'gf-admin',
+			GF_PLUGIN_URL . 'assets/js/admin.js',
+			[ 'jquery' ],
+			GF_VERSION,
+			true
+		);
 	}
 
 	// ── Meta Boxes ────────────────────────────────────────────────────────────
@@ -98,6 +123,9 @@ class CPT {
 		$tags        = get_post_meta( $post->ID, '_gf_tags', true );
 		$link        = get_post_meta( $post->ID, '_gf_link', true );
 		$link_target = get_post_meta( $post->ID, '_gf_link_target', true );
+
+		$gallery = get_post_meta( $post->ID, '_gf_gallery', true );
+		$gallery = is_array( $gallery ) ? array_filter( array_map( 'intval', $gallery ) ) : [];
 		?>
 		<style>
 			.gf-meta-table { width: 100%; border-collapse: collapse; }
@@ -106,7 +134,36 @@ class CPT {
 			.gf-meta-table small { color: #777; font-weight: normal; display: block; margin-top: 2px; }
 			.gf-meta-table input[type="text"],
 			.gf-meta-table input[type="url"] { width: 100%; }
+			.gf-gallery-field { margin: 4px 0 18px; }
+			.gf-gallery-preview { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 10px; padding: 0; list-style: none; }
+			.gf-gallery-preview:empty { display: none; }
+			.gf-gallery-preview li { position: relative; width: 80px; height: 80px; border-radius: 4px; overflow: hidden; box-shadow: 0 0 0 1px rgba(0,0,0,0.1); }
+			.gf-gallery-preview li img { width: 100%; height: 100%; object-fit: cover; display: block; }
+			.gf-gallery-remove { position: absolute; top: 2px; right: 2px; width: 20px; height: 20px; line-height: 18px; text-align: center; padding: 0; border: none; border-radius: 50%; background: rgba(0,0,0,0.65); color: #fff; font-size: 15px; cursor: pointer; }
+			.gf-gallery-remove:hover { background: #b32d2e; }
+			.gf-gallery-empty { color: #777; margin: 0 0 10px; font-style: italic; }
 		</style>
+
+		<p style="margin:0 0 4px;font-weight:600;">Gallery Images
+			<small style="color:#777;font-weight:normal;display:block;">Before / after and any extra photos. Shown in the lightbox. Set a <strong>Featured Image</strong> (right sidebar) to use as the card cover — it is added first in the lightbox automatically.</small>
+		</p>
+		<div class="gf-gallery-field">
+			<ul class="gf-gallery-preview">
+				<?php foreach ( $gallery as $att_id ) :
+					$thumb = wp_get_attachment_image( $att_id, [ 80, 80 ] );
+					if ( ! $thumb ) continue;
+					?>
+					<li data-id="<?php echo esc_attr( $att_id ); ?>">
+						<?php echo $thumb; ?>
+						<button type="button" class="gf-gallery-remove" aria-label="Remove image">&times;</button>
+					</li>
+				<?php endforeach; ?>
+			</ul>
+			<input type="hidden" name="gf_gallery" class="gf-gallery-ids" value="<?php echo esc_attr( implode( ',', $gallery ) ); ?>" />
+			<button type="button" class="button gf-gallery-add">Add / Edit Images</button>
+			<button type="button" class="button-link gf-gallery-clear" style="margin-left:8px;color:#b32d2e;">Clear all</button>
+		</div>
+
 		<table class="gf-meta-table">
 			<tr>
 				<th>
@@ -119,7 +176,7 @@ class CPT {
 						id="gf_tags"
 						name="gf_tags"
 						value="<?php echo esc_attr( $tags ); ?>"
-						placeholder="Drainage, Driveway, Residential"
+						placeholder="Residential, New Installation, Stone Base"
 					/>
 				</td>
 			</tr>
@@ -153,7 +210,7 @@ class CPT {
 			</tr>
 		</table>
 		<p style="margin-top:14px;color:#777;font-size:12px;">
-			<strong>Tip:</strong> Set a Featured Image above — it becomes the card background photo.
+			<strong>Tip:</strong> The main editor above is the project <strong>Description</strong> — it appears in the lightbox.
 			Assign a <a href="edit-tags.php?taxonomy=gf_category&post_type=gf_project">Gallery Category</a> to enable filtering.
 		</p>
 		<?php
@@ -178,6 +235,14 @@ class CPT {
 		}
 		$target = ( isset( $_POST['gf_link_target'] ) && $_POST['gf_link_target'] === '_self' ) ? '_self' : '_blank';
 		update_post_meta( $post_id, '_gf_link_target', $target );
+
+		if ( isset( $_POST['gf_gallery'] ) ) {
+			$ids = array_values( array_filter( array_map(
+				'intval',
+				explode( ',', sanitize_text_field( wp_unslash( $_POST['gf_gallery'] ) ) )
+			) ) );
+			update_post_meta( $post_id, '_gf_gallery', $ids );
+		}
 	}
 
 	// ── Admin Columns ─────────────────────────────────────────────────────────
