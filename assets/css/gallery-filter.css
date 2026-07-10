@@ -114,8 +114,11 @@
 
 /* ── Card Image ── */
 .gf-card-img {
-	width: 100%;
-	height: 100%;
+	/* !important so themes forcing `img { height:auto }` can't collapse the
+	   cover image inside the fixed-height card. */
+	width: 100% !important;
+	height: 100% !important;
+	max-width: none !important;
 	object-fit: cover;
 	display: block;
 }
@@ -143,8 +146,9 @@
 .gf-ba-img {
 	position: absolute;
 	inset: 0;
-	width: 100%;
-	height: 100%;
+	width: 100% !important;
+	height: 100% !important;
+	max-width: none !important;
 	object-fit: cover;
 	display: block;
 	pointer-events: none;
@@ -384,10 +388,12 @@ body.gf-lb-open {
 }
 
 .gf-lb-img {
-	max-width: 90vw;
-	max-height: 80vh;
-	width: auto;
-	height: auto;
+	/* !important guards against themes that force `img { max-width:100% }`,
+	   which would otherwise let the lightbox image blow past the viewport. */
+	max-width: 90vw !important;
+	max-height: 80vh !important;
+	width: auto !important;
+	height: auto !important;
 	object-fit: contain;
 	border-radius: 6px;
 	opacity: 0;
@@ -405,6 +411,8 @@ body.gf-lb-open {
 	z-index: 1;
 	display: inline-block;
 	line-height: 0;
+	max-width: 90vw;
+	max-height: 80vh;
 	--gf-ba-pos: 50%;
 	touch-action: pan-y;
 	user-select: none;
@@ -421,18 +429,22 @@ body.gf-lb-open {
 }
 
 .gf-lb-ba-after {
-	max-width: 90vw;
-	max-height: 80vh;
-	width: auto;
-	height: auto;
+	/* !important so a theme's `img { max-width:100% }` can't blow the
+	   comparison up to full-screen (its container shrink-wraps to this image). */
+	max-width: 90vw !important;
+	max-height: 80vh !important;
+	width: auto !important;
+	height: auto !important;
 	border-radius: 6px;
 }
 
 .gf-lb-ba-before {
 	position: absolute;
 	inset: 0;
-	width: 100%;
-	height: 100%;
+	width: 100% !important;
+	height: 100% !important;
+	max-width: none !important;
+	max-height: none !important;
 	object-fit: cover;
 	border-radius: 6px;
 	clip-path: inset(0 calc(100% - var(--gf-ba-pos)) 0 0);
