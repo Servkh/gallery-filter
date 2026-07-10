@@ -86,8 +86,21 @@ class Elementor_Widget extends Widget_Base {
 		$repeater->add_control( 'images', [
 			'label'       => 'Images',
 			'type'        => Controls_Manager::GALLERY,
-			'description' => 'First image is used as the card background. Add more for future lightbox support.',
+			'description' => 'First image is the card cover; all images open in the lightbox. (Ignored if a Before + After pair is set below.)',
 			'default'     => [],
+		] );
+
+		$repeater->add_control( 'before_image', [
+			'label'       => 'Before Image',
+			'type'        => Controls_Manager::MEDIA,
+			'description' => 'Set both Before and After to show a draggable comparison slider instead of the gallery.',
+			'default'     => [ 'url' => '' ],
+		] );
+
+		$repeater->add_control( 'after_image', [
+			'label'   => 'After Image',
+			'type'    => Controls_Manager::MEDIA,
+			'default' => [ 'url' => '' ],
 		] );
 
 		$repeater->add_control( 'title', [
@@ -682,6 +695,76 @@ class Elementor_Widget extends Widget_Base {
 		] );
 
 		$this->end_controls_section();
+
+		/* ── Before / After Slider Style ── */
+
+		$this->start_controls_section( 'section_ba_style', [
+			'label' => 'Before / After Slider',
+			'tab'   => Controls_Manager::TAB_STYLE,
+		] );
+
+		$this->add_control( 'ba_divider_color', [
+			'label'     => 'Divider Color',
+			'type'      => Controls_Manager::COLOR,
+			'default'   => '#ffffff',
+			'selectors' => [ '{{WRAPPER}} .gf-ba-handle, {{WRAPPER}} .gf-lb-ba-handle' => 'background: {{VALUE}};' ],
+		] );
+
+		$this->add_control( 'ba_handle_color', [
+			'label'     => 'Handle Color',
+			'type'      => Controls_Manager::COLOR,
+			'default'   => '#ffffff',
+			'selectors' => [ '{{WRAPPER}} .gf-ba-grip, {{WRAPPER}} .gf-lb-ba-grip' => 'background: {{VALUE}};' ],
+		] );
+
+		$this->add_control( 'ba_handle_icon_color', [
+			'label'     => 'Handle Icon Color',
+			'type'      => Controls_Manager::COLOR,
+			'default'   => '#1a1a1a',
+			'selectors' => [ '{{WRAPPER}} .gf-ba-grip, {{WRAPPER}} .gf-lb-ba-grip' => 'color: {{VALUE}};' ],
+		] );
+
+		$this->add_control( 'show_ba_labels', [
+			'label'        => 'Show Before / After Labels',
+			'type'         => Controls_Manager::SWITCHER,
+			'label_on'     => 'Yes',
+			'label_off'    => 'No',
+			'return_value' => 'yes',
+			'default'      => 'yes',
+			'separator'    => 'before',
+		] );
+
+		$this->add_control( 'before_label', [
+			'label'     => 'Before Label',
+			'type'      => Controls_Manager::TEXT,
+			'default'   => 'Before',
+			'condition' => [ 'show_ba_labels' => 'yes' ],
+		] );
+
+		$this->add_control( 'after_label', [
+			'label'     => 'After Label',
+			'type'      => Controls_Manager::TEXT,
+			'default'   => 'After',
+			'condition' => [ 'show_ba_labels' => 'yes' ],
+		] );
+
+		$this->add_control( 'ba_label_bg', [
+			'label'     => 'Label Background',
+			'type'      => Controls_Manager::COLOR,
+			'default'   => 'rgba(0,0,0,0.6)',
+			'selectors' => [ '{{WRAPPER}} .gf-ba-label, {{WRAPPER}} .gf-lb-ba-label' => 'background: {{VALUE}};' ],
+			'condition' => [ 'show_ba_labels' => 'yes' ],
+		] );
+
+		$this->add_control( 'ba_label_color', [
+			'label'     => 'Label Text Color',
+			'type'      => Controls_Manager::COLOR,
+			'default'   => '#ffffff',
+			'selectors' => [ '{{WRAPPER}} .gf-ba-label, {{WRAPPER}} .gf-lb-ba-label' => 'color: {{VALUE}};' ],
+			'condition' => [ 'show_ba_labels' => 'yes' ],
+		] );
+
+		$this->end_controls_section();
 	}
 
 	// ── Render ────────────────────────────────────────────────────────────────
@@ -719,6 +802,9 @@ class Elementor_Widget extends Widget_Base {
 		$columns_mobile = intval( $settings['columns_mobile'] );
 		$hover_zoom     = $settings['hover_zoom'] === 'yes' ? 'gf-zoom' : '';
 		$show_desc_card = ! empty( $settings['show_desc_on_card'] ) && $settings['show_desc_on_card'] === 'yes';
+		$show_ba_labels = ! isset( $settings['show_ba_labels'] ) || $settings['show_ba_labels'] === 'yes';
+		$before_label   = ! empty( $settings['before_label'] ) ? $settings['before_label'] : 'Before';
+		$after_label    = ! empty( $settings['after_label'] ) ? $settings['after_label'] : 'After';
 		$widget_id      = $this->get_id();
 		?>
 		<style>
@@ -755,19 +841,28 @@ class Elementor_Widget extends Widget_Base {
 					$tags         = $item['tags'];
 					$description  = $item['description'];
 					$link         = $item['link'];
+					$is_ba        = ! empty( $item['is_ba'] );
+					$before       = $item['before'];
+					$after        = $item['after'];
 					$img_count    = count( $images );
-					$has_gallery  = $img_count > 0;
+					$has_gallery  = $is_ba || $img_count > 0;
 					$gallery_json = wp_json_encode( $images );
 				?>
 				<div
-					class="gf-card <?php echo esc_attr( $hover_zoom ); ?><?php echo $has_gallery ? ' gf-has-gallery' : ''; ?>"
+					class="gf-card <?php echo esc_attr( $hover_zoom ); ?><?php echo $has_gallery ? ' gf-has-gallery' : ''; ?><?php echo $is_ba ? ' gf-card--ba' : ''; ?>"
 					data-categories="<?php echo esc_attr( $cat_slug ); ?>"
 					data-title="<?php echo esc_attr( $title ); ?>"
 					data-description="<?php echo esc_attr( $description ); ?>"
 					data-gallery="<?php echo esc_attr( $gallery_json ); ?>"
-					<?php if ( $has_gallery ) : ?>role="button" tabindex="0" aria-label="Open <?php echo esc_attr( $title ); ?> gallery"<?php endif; ?>
+					<?php if ( $is_ba ) : ?>data-ba="1" data-before="<?php echo esc_url( $before ); ?>" data-after="<?php echo esc_url( $after ); ?>"<?php endif; ?>
+					<?php if ( $has_gallery ) : ?>role="button" tabindex="0" aria-label="Open <?php echo esc_attr( $title ); ?><?php echo $is_ba ? ' before and after comparison' : ' gallery'; ?>"<?php endif; ?>
 				>
-					<?php if ( $img_url ) : ?>
+					<?php if ( $is_ba ) : ?>
+					<div class="gf-ba" aria-hidden="true">
+						<img class="gf-ba-img gf-ba-after" src="<?php echo esc_url( $after ); ?>" alt="" loading="lazy" />
+						<img class="gf-ba-img gf-ba-before" src="<?php echo esc_url( $before ); ?>" alt="" loading="lazy" />
+					</div>
+					<?php elseif ( $img_url ) : ?>
 					<img
 						src="<?php echo esc_url( $img_url ); ?>"
 						alt="<?php echo esc_attr( $img_alt ); ?>"
@@ -819,6 +914,14 @@ class Elementor_Widget extends Widget_Base {
 					<span class="gf-arrow" aria-hidden="true"><?php echo $this->get_arrow_svg(); ?></span>
 					<?php endif; ?>
 
+					<?php if ( $is_ba ) : ?>
+					<?php if ( $show_ba_labels ) : ?>
+					<span class="gf-ba-label gf-ba-label--before"><?php echo esc_html( $before_label ); ?></span>
+					<span class="gf-ba-label gf-ba-label--after"><?php echo esc_html( $after_label ); ?></span>
+					<?php endif; ?>
+					<div class="gf-ba-handle" aria-hidden="true"><span class="gf-ba-grip"><?php echo $this->get_ba_grip_svg(); ?></span></div>
+					<?php endif; ?>
+
 				</div>
 				<?php endforeach; ?>
 			</div><!-- .gf-grid -->
@@ -837,6 +940,15 @@ class Elementor_Widget extends Widget_Base {
 				</button>
 				<div class="gf-lb-stage">
 					<img class="gf-lb-img" src="" alt="" />
+					<div class="gf-lb-ba" hidden>
+						<img class="gf-lb-ba-img gf-lb-ba-after" src="" alt="" />
+						<img class="gf-lb-ba-img gf-lb-ba-before" src="" alt="" />
+						<?php if ( $show_ba_labels ) : ?>
+						<span class="gf-ba-label gf-lb-ba-label gf-lb-ba-label--before"><?php echo esc_html( $before_label ); ?></span>
+						<span class="gf-ba-label gf-lb-ba-label gf-lb-ba-label--after"><?php echo esc_html( $after_label ); ?></span>
+						<?php endif; ?>
+						<div class="gf-lb-ba-handle" tabindex="0" role="slider" aria-label="Before and after comparison" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50"><span class="gf-ba-grip gf-lb-ba-grip"><?php echo $this->get_ba_grip_svg(); ?></span></div>
+					</div>
 				</div>
 				<div class="gf-lb-footer">
 					<div class="gf-lb-text">
@@ -900,6 +1012,9 @@ class Elementor_Widget extends Widget_Base {
 				! empty( $item['link']['nofollow'] )
 			);
 
+			$before_url = ! empty( $item['before_image']['url'] ) ? $item['before_image']['url'] : '';
+			$after_url  = ! empty( $item['after_image']['url'] ) ? $item['after_image']['url'] : '';
+
 			$items[] = [
 				'title'       => $title,
 				'category'    => $cat,
@@ -908,6 +1023,9 @@ class Elementor_Widget extends Widget_Base {
 				'description' => isset( $item['description'] ) ? $item['description'] : '',
 				'link'        => $link,
 				'images'      => $images,
+				'before'      => $before_url,
+				'after'       => $after_url,
+				'is_ba'       => ( $before_url !== '' && $after_url !== '' ),
 			];
 		}
 
@@ -987,6 +1105,11 @@ class Elementor_Widget extends Widget_Base {
 				get_post_meta( $pid, '_gf_link_target', true ) !== '_self'
 			);
 
+			$before_id  = (int) get_post_meta( $pid, '_gf_before', true );
+			$after_id   = (int) get_post_meta( $pid, '_gf_after', true );
+			$before_url = $before_id ? wp_get_attachment_image_url( $before_id, 'large' ) : '';
+			$after_url  = $after_id ? wp_get_attachment_image_url( $after_id, 'large' ) : '';
+
 			$items[] = [
 				'title'       => $title,
 				'category'    => $cat,
@@ -995,6 +1118,9 @@ class Elementor_Widget extends Widget_Base {
 				'description' => trim( wp_strip_all_tags( $post->post_content ) ),
 				'link'        => $link,
 				'images'      => $images,
+				'before'      => $before_url ? $before_url : '',
+				'after'       => $after_url ? $after_url : '',
+				'is_ba'       => ( $before_url && $after_url ),
 			];
 		}
 
@@ -1005,5 +1131,9 @@ class Elementor_Widget extends Widget_Base {
 
 	private function get_arrow_svg() {
 		return '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>';
+	}
+
+	private function get_ba_grip_svg() {
+		return '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 6 4 12 9 18"/><polyline points="15 6 20 12 15 18"/></svg>';
 	}
 }
