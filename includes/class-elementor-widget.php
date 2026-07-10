@@ -689,7 +689,7 @@ class Elementor_Widget extends Widget_Base {
 		$this->add_control( 'lb_btn_bg', [
 			'label'     => 'Button Background',
 			'type'      => Controls_Manager::COLOR,
-			'default'   => 'rgba(255,255,255,0.12)',
+			'default'   => 'rgba(0,0,0,0.55)',
 			'selectors' => [ '{{WRAPPER}} .gf-lb-close, {{WRAPPER}} .gf-lb-prev, {{WRAPPER}} .gf-lb-next' => 'background: {{VALUE}};' ],
 		] );
 
