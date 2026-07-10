@@ -12,6 +12,7 @@ use Elementor\Controls_Manager;
 use Elementor\Repeater;
 use Elementor\Group_Control_Typography;
 use Elementor\Group_Control_Box_Shadow;
+use Elementor\Group_Control_Border;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -139,19 +140,22 @@ class Elementor_Widget extends Widget_Base {
 					'images'   => [],
 					'title'    => 'Country Lane Driveway Restoration',
 					'category' => 'Residential',
-					'tags'     => 'Drainage, Driveway',
+					'tags'     => 'Residential, New Installation, Stone Base, Drainage Solutions',
+					'description' => 'Complete driveway replacement for a rural property including excavation, stone base installation, and 2.5" of Superpave asphalt. We graded the surface for proper water runoff and installed a new stone base before paving.',
 				],
 				[
 					'images'   => [],
 					'title'    => 'Medical Office Parking Lot',
 					'category' => 'Commercial',
-					'tags'     => 'Resurfacing, Parking Lot',
+					'tags'     => 'Commercial, Resurfacing, Parking Lot',
+					'description' => 'Full-depth reclamation and resurfacing of a busy medical office parking lot, completed in phases to keep the facility open throughout the project.',
 				],
 				[
 					'images'   => [],
 					'title'    => 'Historic Home Driveway',
 					'category' => 'Residential',
-					'tags'     => 'Custom Design, Historic Property',
+					'tags'     => 'Residential, Custom Design, Historic Property',
+					'description' => 'A custom driveway design sympathetic to a historic property, balancing modern durability with a look appropriate to the home\'s period character.',
 				],
 			],
 			'title_field' => '{{{ title }}}',
@@ -187,13 +191,34 @@ class Elementor_Widget extends Widget_Base {
 			'options' => [ '1' => '1', '2' => '2' ],
 		] );
 
-		$this->add_control( 'card_height', [
+		$this->add_responsive_control( 'card_height', [
 			'label'      => 'Card Height',
 			'type'       => Controls_Manager::SLIDER,
 			'size_units' => [ 'px', 'vh' ],
 			'range'      => [ 'px' => [ 'min' => 150, 'max' => 800 ], 'vh' => [ 'min' => 10, 'max' => 80 ] ],
 			'default'    => [ 'unit' => 'px', 'size' => 450 ],
 			'selectors'  => [ '{{WRAPPER}} .gf-card' => 'height: {{SIZE}}{{UNIT}};' ],
+		] );
+
+		$this->add_control( 'show_desc_on_card', [
+			'label'        => 'Show Description on Card',
+			'type'         => Controls_Manager::SWITCHER,
+			'label_on'     => 'Yes',
+			'label_off'    => 'No',
+			'return_value' => 'yes',
+			'default'      => '',
+			'separator'    => 'before',
+			'description'  => 'Display the project description directly on each card (it always shows in the lightbox too).',
+		] );
+
+		$this->add_control( 'desc_card_lines', [
+			'label'       => 'Description Lines (before trimming)',
+			'type'        => Controls_Manager::NUMBER,
+			'default'     => 3,
+			'min'         => 1,
+			'max'         => 10,
+			'selectors'   => [ '{{WRAPPER}} .gf-card-desc' => '-webkit-line-clamp: {{VALUE}};' ],
+			'condition'   => [ 'show_desc_on_card' => 'yes' ],
 		] );
 
 		$this->end_controls_section();
@@ -246,7 +271,7 @@ class Elementor_Widget extends Widget_Base {
 			'condition' => [ 'show_filter' => 'yes' ],
 		] );
 
-		$this->add_control( 'filter_gap', [
+		$this->add_responsive_control( 'filter_gap', [
 			'label'     => 'Gap Between Buttons',
 			'type'      => Controls_Manager::SLIDER,
 			'size_units'=> [ 'px' ],
@@ -255,7 +280,7 @@ class Elementor_Widget extends Widget_Base {
 			'selectors' => [ '{{WRAPPER}} .gf-filter' => 'gap: {{SIZE}}{{UNIT}};' ],
 		] );
 
-		$this->add_control( 'filter_margin_bottom', [
+		$this->add_responsive_control( 'filter_margin_bottom', [
 			'label'     => 'Space Below Filter Bar',
 			'type'      => Controls_Manager::SLIDER,
 			'size_units'=> [ 'px' ],
@@ -280,6 +305,22 @@ class Elementor_Widget extends Widget_Base {
 			'type'      => Controls_Manager::COLOR,
 			'default'   => '#1a1a1a',
 			'selectors' => [ '{{WRAPPER}} .gf-filter-btn' => 'color: {{VALUE}};' ],
+		] );
+
+		$this->end_controls_tab();
+
+		$this->start_controls_tab( 'filter_tab_hover', [ 'label' => 'Hover' ] );
+
+		$this->add_control( 'filter_btn_hover_bg', [
+			'label'     => 'Background',
+			'type'      => Controls_Manager::COLOR,
+			'selectors' => [ '{{WRAPPER}} .gf-filter-btn:hover' => 'background-color: {{VALUE}};' ],
+		] );
+
+		$this->add_control( 'filter_btn_hover_color', [
+			'label'     => 'Text Color',
+			'type'      => Controls_Manager::COLOR,
+			'selectors' => [ '{{WRAPPER}} .gf-filter-btn:hover' => 'color: {{VALUE}};' ],
 		] );
 
 		$this->end_controls_tab();
@@ -327,6 +368,12 @@ class Elementor_Widget extends Widget_Base {
 			'selector' => '{{WRAPPER}} .gf-filter-btn',
 		] );
 
+		$this->add_group_control( Group_Control_Border::get_type(), [
+			'name'      => 'filter_border',
+			'selector'  => '{{WRAPPER}} .gf-filter-btn',
+			'separator' => 'before',
+		] );
+
 		$this->end_controls_section();
 
 		/* ── Card Style ── */
@@ -336,7 +383,7 @@ class Elementor_Widget extends Widget_Base {
 			'tab'   => Controls_Manager::TAB_STYLE,
 		] );
 
-		$this->add_control( 'card_gap', [
+		$this->add_responsive_control( 'card_gap', [
 			'label'     => 'Gap Between Cards',
 			'type'      => Controls_Manager::SLIDER,
 			'size_units'=> [ 'px' ],
@@ -352,6 +399,11 @@ class Elementor_Widget extends Widget_Base {
 			'range'     => [ 'px' => [ 'min' => 0, 'max' => 40 ] ],
 			'default'   => [ 'unit' => 'px', 'size' => 12 ],
 			'selectors' => [ '{{WRAPPER}} .gf-card' => 'border-radius: {{SIZE}}{{UNIT}};' ],
+		] );
+
+		$this->add_group_control( Group_Control_Border::get_type(), [
+			'name'     => 'card_border',
+			'selector' => '{{WRAPPER}} .gf-card',
 		] );
 
 		$this->add_group_control( Group_Control_Box_Shadow::get_type(), [
@@ -527,6 +579,109 @@ class Elementor_Widget extends Widget_Base {
 		] );
 
 		$this->end_controls_section();
+
+		/* ── Card Description Style ── */
+
+		$this->start_controls_section( 'section_card_desc_style', [
+			'label'     => 'Card Description',
+			'tab'       => Controls_Manager::TAB_STYLE,
+			'condition' => [ 'show_desc_on_card' => 'yes' ],
+		] );
+
+		$this->add_control( 'card_desc_color', [
+			'label'     => 'Text Color',
+			'type'      => Controls_Manager::COLOR,
+			'default'   => 'rgba(255,255,255,0.85)',
+			'selectors' => [ '{{WRAPPER}} .gf-card-desc' => 'color: {{VALUE}};' ],
+		] );
+
+		$this->add_control( 'card_desc_spacing', [
+			'label'     => 'Space Above',
+			'type'      => Controls_Manager::SLIDER,
+			'size_units'=> [ 'px' ],
+			'range'     => [ 'px' => [ 'min' => 0, 'max' => 30 ] ],
+			'default'   => [ 'unit' => 'px', 'size' => 8 ],
+			'selectors' => [ '{{WRAPPER}} .gf-card-desc' => 'margin-top: {{SIZE}}{{UNIT}};' ],
+		] );
+
+		$this->add_group_control( Group_Control_Typography::get_type(), [
+			'name'     => 'card_desc_typography',
+			'selector' => '{{WRAPPER}} .gf-card-desc',
+		] );
+
+		$this->end_controls_section();
+
+		/* ── Lightbox Style ── */
+
+		$this->start_controls_section( 'section_lightbox_style', [
+			'label' => 'Lightbox',
+			'tab'   => Controls_Manager::TAB_STYLE,
+		] );
+
+		$this->add_control( 'lb_backdrop', [
+			'label'     => 'Backdrop Color',
+			'type'      => Controls_Manager::COLOR,
+			'default'   => 'rgba(0,0,0,0.92)',
+			'selectors' => [ '{{WRAPPER}} .gf-lb-backdrop' => 'background: {{VALUE}};' ],
+		] );
+
+		$this->add_control( 'lb_title_heading', [
+			'label'     => 'Title',
+			'type'      => Controls_Manager::HEADING,
+			'separator' => 'before',
+		] );
+
+		$this->add_control( 'lb_title_color', [
+			'label'     => 'Title Color',
+			'type'      => Controls_Manager::COLOR,
+			'default'   => '#ffffff',
+			'selectors' => [ '{{WRAPPER}} .gf-lb-title' => 'color: {{VALUE}};' ],
+		] );
+
+		$this->add_group_control( Group_Control_Typography::get_type(), [
+			'name'     => 'lb_title_typography',
+			'selector' => '{{WRAPPER}} .gf-lb-title',
+		] );
+
+		$this->add_control( 'lb_desc_heading', [
+			'label'     => 'Description',
+			'type'      => Controls_Manager::HEADING,
+			'separator' => 'before',
+		] );
+
+		$this->add_control( 'lb_desc_color', [
+			'label'     => 'Description Color',
+			'type'      => Controls_Manager::COLOR,
+			'default'   => 'rgba(255,255,255,0.85)',
+			'selectors' => [ '{{WRAPPER}} .gf-lb-desc' => 'color: {{VALUE}}; opacity: 1;' ],
+		] );
+
+		$this->add_group_control( Group_Control_Typography::get_type(), [
+			'name'     => 'lb_desc_typography',
+			'selector' => '{{WRAPPER}} .gf-lb-desc',
+		] );
+
+		$this->add_control( 'lb_controls_heading', [
+			'label'     => 'Navigation & Close Buttons',
+			'type'      => Controls_Manager::HEADING,
+			'separator' => 'before',
+		] );
+
+		$this->add_control( 'lb_btn_bg', [
+			'label'     => 'Button Background',
+			'type'      => Controls_Manager::COLOR,
+			'default'   => 'rgba(255,255,255,0.12)',
+			'selectors' => [ '{{WRAPPER}} .gf-lb-close, {{WRAPPER}} .gf-lb-prev, {{WRAPPER}} .gf-lb-next' => 'background: {{VALUE}};' ],
+		] );
+
+		$this->add_control( 'lb_btn_color', [
+			'label'     => 'Icon Color',
+			'type'      => Controls_Manager::COLOR,
+			'default'   => '#ffffff',
+			'selectors' => [ '{{WRAPPER}} .gf-lb-close, {{WRAPPER}} .gf-lb-prev, {{WRAPPER}} .gf-lb-next' => 'color: {{VALUE}};' ],
+		] );
+
+		$this->end_controls_section();
 	}
 
 	// ── Render ────────────────────────────────────────────────────────────────
@@ -563,6 +718,7 @@ class Elementor_Widget extends Widget_Base {
 		$columns_tablet = intval( $settings['columns_tablet'] );
 		$columns_mobile = intval( $settings['columns_mobile'] );
 		$hover_zoom     = $settings['hover_zoom'] === 'yes' ? 'gf-zoom' : '';
+		$show_desc_card = ! empty( $settings['show_desc_on_card'] ) && $settings['show_desc_on_card'] === 'yes';
 		$widget_id      = $this->get_id();
 		?>
 		<style>
@@ -645,6 +801,9 @@ class Elementor_Widget extends Widget_Base {
 							<span class="gf-tag"><?php echo esc_html( $tag ); ?></span>
 							<?php endforeach; ?>
 						</div>
+						<?php endif; ?>
+						<?php if ( $show_desc_card && $description !== '' ) : ?>
+						<p class="gf-card-desc"><?php echo esc_html( $description ); ?></p>
 						<?php endif; ?>
 					</div>
 
