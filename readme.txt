@@ -4,7 +4,7 @@ Tags: gallery, filter, portfolio, elementor, before-after
 Requires at least: 5.8
 Tested up to: 6.6
 Requires PHP: 7.4
-Stable tag: 1.3.3
+Stable tag: 1.3.4
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -53,6 +53,9 @@ No. Projects are stored in the WordPress database, not in the plugin folder. Upd
 Reload the editor after updating so it loads the current CSS/JS (browsers cache assets aggressively). Fixed in 1.3.1.
 
 == Changelog ==
+
+= 1.3.4 =
+* Improve: much larger, higher-contrast lightbox controls — bigger close, prev/next, and comparison-handle buttons with a white ring and larger icons so they're clearly visible on any image.
 
 = 1.3.3 =
 * Fix: the lightbox image and before/after comparison could blow up to full-screen (and hide the gallery) on themes that force `img { max-width:100% }`. Lightbox and card image sizes are now enforced so they stay within the viewport regardless of theme CSS.

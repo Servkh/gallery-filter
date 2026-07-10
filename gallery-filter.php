@@ -3,7 +3,7 @@
  * Plugin Name:       Gallery Filter
  * Plugin URI:        https://github.com/
  * Description:       A lightweight filterable gallery with Elementor widget support. Add projects, assign categories, and drop the widget anywhere on your page.
- * Version:           1.3.3
+ * Version:           1.3.4
  * Requires at least: 5.8
  * Requires PHP:      7.4
  * Author:            Your Name
@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'GF_VERSION',    '1.3.3' );
+define( 'GF_VERSION',    '1.3.4' );
 define( 'GF_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'GF_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 

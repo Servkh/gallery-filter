@@ -176,17 +176,19 @@
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
-	width: 34px;
-	height: 34px;
+	width: 38px;
+	height: 38px;
 	border-radius: 50%;
 	background: #ffffff;
 	color: #1a1a1a;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
 	pointer-events: none;
 }
+
+.gf-ba-grip svg { width: 20px; height: 20px; }
 
 .gf-ba-label {
 	position: absolute;
@@ -468,15 +470,17 @@ body.gf-lb-open {
 }
 
 .gf-lb-ba-grip {
-	width: 44px;
-	height: 44px;
+	width: 58px;
+	height: 58px;
 }
 
+.gf-lb-ba-grip svg { width: 28px; height: 28px; }
+
 .gf-lb-ba-label {
-	top: 16px;
+	top: 18px;
 	transform: none;
-	font-size: 12px;
-	padding: 4px 12px;
+	font-size: 13px;
+	padding: 5px 14px;
 }
 
 .gf-lb-ba-label--before { left: 16px; right: auto; }
@@ -485,29 +489,30 @@ body.gf-lb-open {
 /* Close button */
 .gf-lb-close {
 	position: fixed;
-	top: 18px;
-	right: 18px;
+	top: 20px;
+	right: 20px;
 	z-index: 5;
-	width: 44px;
-	height: 44px;
-	/* Dark, so the white icon stays visible over bright images (e.g. the
-	   full-bleed before/after comparison), not just over the dark backdrop. */
-	background: rgba(0, 0, 0, 0.55);
-	border: none;
+	width: 54px;
+	height: 54px;
+	/* Solid dark disc + white ring so it stays clearly visible on any
+	   background — bright images or the dark backdrop. */
+	background: rgba(0, 0, 0, 0.65);
+	border: 2px solid rgba(255, 255, 255, 0.65);
 	border-radius: 50%;
 	color: #fff;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	cursor: pointer;
-	box-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
-	backdrop-filter: blur(4px);
-	-webkit-backdrop-filter: blur(4px);
-	transition: background 0.2s ease;
+	box-shadow: 0 2px 14px rgba(0, 0, 0, 0.55);
+	transition: background 0.2s ease, transform 0.15s ease;
 }
 
+.gf-lb-close svg { width: 28px; height: 28px; }
+
 .gf-lb-close:hover {
-	background: rgba(0, 0, 0, 0.8);
+	background: #000;
+	transform: scale(1.08);
 }
 
 /* Prev / Next buttons */
@@ -517,27 +522,28 @@ body.gf-lb-open {
 	top: 50%;
 	transform: translateY(-50%);
 	z-index: 5;
-	width: 52px;
-	height: 52px;
-	background: rgba(0, 0, 0, 0.55);
-	border: none;
+	width: 64px;
+	height: 64px;
+	background: rgba(0, 0, 0, 0.65);
+	border: 2px solid rgba(255, 255, 255, 0.65);
 	border-radius: 50%;
 	color: #fff;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	cursor: pointer;
-	box-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
-	backdrop-filter: blur(4px);
-	-webkit-backdrop-filter: blur(4px);
+	box-shadow: 0 2px 14px rgba(0, 0, 0, 0.55);
 	transition: background 0.2s ease, transform 0.2s ease;
 }
 
-.gf-lb-prev { left: 18px; }
-.gf-lb-next { right: 18px; }
+.gf-lb-prev svg,
+.gf-lb-next svg { width: 34px; height: 34px; }
 
-.gf-lb-prev:hover { background: rgba(0,0,0,0.8); transform: translateY(-50%) scale(1.08); }
-.gf-lb-next:hover { background: rgba(0,0,0,0.8); transform: translateY(-50%) scale(1.08); }
+.gf-lb-prev { left: 22px; }
+.gf-lb-next { right: 22px; }
+
+.gf-lb-prev:hover { background: #000; transform: translateY(-50%) scale(1.08); }
+.gf-lb-next:hover { background: #000; transform: translateY(-50%) scale(1.08); }
 
 /* Footer: title + description + counter */
 .gf-lb-footer {
@@ -598,8 +604,12 @@ body.gf-lb-open {
 
 /* Mobile adjustments */
 @media (max-width: 600px) {
-	.gf-lb-prev { left: 8px; }
-	.gf-lb-next { right: 8px; }
+	.gf-lb-prev { left: 10px; }
+	.gf-lb-next { right: 10px; }
 	.gf-lb-prev,
-	.gf-lb-next { width: 40px; height: 40px; }
+	.gf-lb-next { width: 50px; height: 50px; }
+	.gf-lb-prev svg,
+	.gf-lb-next svg { width: 26px; height: 26px; }
+	.gf-lb-close { width: 48px; height: 48px; top: 12px; right: 12px; }
+	.gf-lb-close svg { width: 24px; height: 24px; }
 }
