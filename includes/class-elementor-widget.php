@@ -89,6 +89,14 @@ class Elementor_Widget extends Widget_Base {
 
 		$repeater = new Repeater();
 
+		// Shared, selectable tag vocabulary (from gf_tag_options()).
+		$tag_options = [];
+		if ( function_exists( 'gf_tag_options' ) ) {
+			foreach ( gf_tag_options() as $gf_tag ) {
+				$tag_options[ $gf_tag ] = $gf_tag;
+			}
+		}
+
 		$repeater->add_control( 'images', [
 			'label'       => 'Images',
 			'type'        => Controls_Manager::GALLERY,
@@ -127,11 +135,11 @@ class Elementor_Widget extends Widget_Base {
 
 		$repeater->add_control( 'tags', [
 			'label'       => 'Tags',
-			'type'        => Controls_Manager::TEXT,
-			'default'     => '',
-			'placeholder' => 'e.g. Drainage, Driveway',
-			'description' => 'Comma-separated labels shown on the card.',
+			'type'        => Controls_Manager::SELECT2,
+			'multiple'    => true,
+			'options'     => $tag_options,
 			'label_block' => true,
+			'description' => 'Select the labels to show on the card (first 3 appear, with a “+N” for the rest).',
 		] );
 
 		$repeater->add_control( 'description', [
@@ -159,21 +167,21 @@ class Elementor_Widget extends Widget_Base {
 					'images'   => [],
 					'title'    => 'Country Lane Driveway Restoration',
 					'category' => 'Residential',
-					'tags'     => 'Residential, New Installation, Stone Base, Drainage Solutions',
+					'tags'     => [ 'Residential', 'New Installation', 'Stone Base', 'Drainage Solutions' ],
 					'description' => 'Complete driveway replacement for a rural property including excavation, stone base installation, and 2.5" of Superpave asphalt. We graded the surface for proper water runoff and installed a new stone base before paving.',
 				],
 				[
 					'images'   => [],
 					'title'    => 'Medical Office Parking Lot',
 					'category' => 'Commercial',
-					'tags'     => 'Commercial, Resurfacing, Parking Lot',
+					'tags'     => [ 'Commercial', 'Resurfacing', 'Parking Lot' ],
 					'description' => 'Full-depth reclamation and resurfacing of a busy medical office parking lot, completed in phases to keep the facility open throughout the project.',
 				],
 				[
 					'images'   => [],
 					'title'    => 'Historic Home Driveway',
 					'category' => 'Residential',
-					'tags'     => 'Residential, Custom Design, Historic Property',
+					'tags'     => [ 'Residential', 'Custom Design' ],
 					'description' => 'A custom driveway design sympathetic to a historic property, balancing modern durability with a look appropriate to the home\'s period character.',
 				],
 			],
@@ -1015,8 +1023,13 @@ class Elementor_Widget extends Widget_Base {
 			}
 
 			$cat      = isset( $item['category'] ) ? trim( $item['category'] ) : '';
-			$tags_raw = isset( $item['tags'] ) ? $item['tags'] : '';
-			$tags     = $tags_raw !== '' ? array_filter( array_map( 'trim', explode( ',', $tags_raw ) ) ) : [];
+			$tags_raw = isset( $item['tags'] ) ? $item['tags'] : [];
+			// SELECT2 returns an array; older saved items may be a comma string.
+			if ( is_array( $tags_raw ) ) {
+				$tags = array_filter( array_map( 'trim', $tags_raw ) );
+			} else {
+				$tags = $tags_raw !== '' ? array_filter( array_map( 'trim', explode( ',', $tags_raw ) ) ) : [];
+			}
 
 			$link = $this->normalize_link(
 				! empty( $item['link']['url'] ) ? $item['link']['url'] : '',

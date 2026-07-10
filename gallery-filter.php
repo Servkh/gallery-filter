@@ -3,7 +3,7 @@
  * Plugin Name:       Gallery Filter
  * Plugin URI:        https://github.com/
  * Description:       A lightweight filterable gallery with Elementor widget support. Add projects, assign categories, and drop the widget anywhere on your page.
- * Version:           1.4.0
+ * Version:           1.5.0
  * Requires at least: 5.8
  * Requires PHP:      7.4
  * Author:            Your Name
@@ -15,9 +15,37 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'GF_VERSION',    '1.4.0' );
+define( 'GF_VERSION',    '1.5.0' );
 define( 'GF_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'GF_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+
+/**
+ * The selectable tag vocabulary, shared by the admin project screen and the
+ * Elementor widget. Filter `gf_tag_options` to add or change tags.
+ *
+ * @return string[]
+ */
+function gf_tag_options() {
+	$tags = [
+		'Residential',
+		'Commercial',
+		'Agricultural',
+		'Municipal',
+		'New Installation',
+		'Resurfacing',
+		'Repair',
+		'Parking Lot',
+		'Driveway',
+		'Roadway',
+		'Stone Base',
+		'Heavy Duty',
+		'Custom Design',
+		'Weekend/Off-Hours Work',
+		'ADA Compliant',
+		'Drainage Solutions',
+	];
+	return apply_filters( 'gf_tag_options', $tags );
+}
 
 // ── CPT & Taxonomy ────────────────────────────────────────────────────────────
 require_once GF_PLUGIN_DIR . 'includes/class-cpt.php';

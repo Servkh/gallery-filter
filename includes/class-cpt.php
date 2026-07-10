@@ -145,6 +145,9 @@ class CPT {
 			.gf-gallery-remove { position: absolute; top: 2px; right: 2px; width: 20px; height: 20px; line-height: 18px; text-align: center; padding: 0; border: none; border-radius: 50%; background: rgba(0,0,0,0.65); color: #fff; font-size: 15px; cursor: pointer; }
 			.gf-gallery-remove:hover { background: #b32d2e; }
 			.gf-gallery-empty { color: #777; margin: 0 0 10px; font-style: italic; }
+			.gf-tag-checklist { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 6px 16px; margin: 0 0 8px; }
+			.gf-tag-checklist label { display: flex; align-items: center; gap: 7px; padding: 4px 0; cursor: pointer; }
+			.gf-tag-checklist label span { line-height: 1.2; }
 			.gf-ba-fields { display: flex; flex-wrap: wrap; gap: 20px; margin: 4px 0 18px; }
 			.gf-single-field { flex: 1; min-width: 200px; }
 			.gf-single-field > strong { display: block; margin-bottom: 6px; }
@@ -197,22 +200,20 @@ class CPT {
 			<button type="button" class="button-link gf-gallery-clear" style="margin-left:8px;color:#b32d2e;">Clear all</button>
 		</div>
 
+		<?php $selected_tags = $tags !== '' ? array_map( 'trim', explode( ',', $tags ) ) : []; ?>
+		<p style="margin:16px 0 4px;font-weight:600;">Tags
+			<small style="color:#777;font-weight:normal;display:block;">Select the labels to show on the card (the first three appear, with a “+N” for the rest).</small>
+		</p>
+		<div class="gf-tag-checklist">
+			<?php foreach ( gf_tag_options() as $tag ) : ?>
+			<label>
+				<input type="checkbox" name="gf_tags[]" value="<?php echo esc_attr( $tag ); ?>" <?php checked( in_array( $tag, $selected_tags, true ) ); ?> />
+				<span><?php echo esc_html( $tag ); ?></span>
+			</label>
+			<?php endforeach; ?>
+		</div>
+
 		<table class="gf-meta-table">
-			<tr>
-				<th>
-					<label for="gf_tags">Tags</label>
-					<small>Shown on card (comma-separated)</small>
-				</th>
-				<td>
-					<input
-						type="text"
-						id="gf_tags"
-						name="gf_tags"
-						value="<?php echo esc_attr( $tags ); ?>"
-						placeholder="Residential, New Installation, Stone Base"
-					/>
-				</td>
-			</tr>
 			<tr>
 				<th>
 					<label for="gf_link">Link URL</label>
@@ -260,9 +261,15 @@ class CPT {
 			return;
 		}
 
-		if ( isset( $_POST['gf_tags'] ) ) {
-			update_post_meta( $post_id, '_gf_tags', sanitize_text_field( wp_unslash( $_POST['gf_tags'] ) ) );
-		}
+		// Tags: a checkbox list, kept only if in the allowed vocabulary, stored
+		// as a comma-separated string for the widget renderer.
+		$allowed  = gf_tag_options();
+		$selected = isset( $_POST['gf_tags'] ) ? (array) wp_unslash( $_POST['gf_tags'] ) : [];
+		$selected = array_values( array_intersect(
+			array_map( 'sanitize_text_field', $selected ),
+			$allowed
+		) );
+		update_post_meta( $post_id, '_gf_tags', implode( ', ', $selected ) );
 		if ( isset( $_POST['gf_link'] ) ) {
 			update_post_meta( $post_id, '_gf_link', esc_url_raw( wp_unslash( $_POST['gf_link'] ) ) );
 		}
