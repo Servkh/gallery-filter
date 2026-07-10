@@ -3,7 +3,7 @@
  * Plugin Name:       Gallery Filter
  * Plugin URI:        https://github.com/
  * Description:       A lightweight filterable gallery with Elementor widget support. Add projects, assign categories, and drop the widget anywhere on your page.
- * Version:           1.3.0
+ * Version:           1.3.1
  * Requires at least: 5.8
  * Requires PHP:      7.4
  * Author:            Your Name
@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'GF_VERSION',    '1.3.0' );
+define( 'GF_VERSION',    '1.3.1' );
 define( 'GF_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'GF_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
@@ -62,4 +62,10 @@ add_action( 'elementor/editor/after_enqueue_styles', function () {
 		[],
 		GF_VERSION
 	);
+} );
+
+// ── Elementor Preview (editor canvas iframe) ──────────────────────────────────
+// Ensures the grid/card layout renders correctly inside the editor preview.
+add_action( 'elementor/preview/enqueue_styles', function () {
+	wp_enqueue_style( 'gallery-filter' );
 } );

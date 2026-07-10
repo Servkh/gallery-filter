@@ -154,7 +154,7 @@ class CPT {
 		</style>
 
 		<p style="margin:0 0 4px;font-weight:600;">Before / After Slider
-			<small style="color:#777;font-weight:normal;display:block;">Set <strong>both</strong> a Before and an After image to turn this project into a draggable comparison slider (on the card and in the lightbox). Leave empty to use the normal gallery.</small>
+			<small style="color:#777;font-weight:normal;display:block;">Set <strong>both</strong> a Before and an After image to show a draggable comparison slider on the card. Any Gallery Images above still open in the lightbox after the comparison. Leave both empty to use only the gallery.</small>
 		</p>
 		<div class="gf-ba-fields">
 			<div class="gf-single-field" data-meta="gf_before">
