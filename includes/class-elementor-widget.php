@@ -439,8 +439,8 @@ class Elementor_Widget extends Widget_Base {
 		$this->add_control( 'overlay_color', [
 			'label'     => 'Overlay Color',
 			'type'      => Controls_Manager::COLOR,
-			'default'   => 'rgba(0,0,0,0.55)',
-			'selectors' => [ '{{WRAPPER}} .gf-card-overlay' => 'background: linear-gradient(to top, {{VALUE}} 0%, transparent 60%);' ],
+			'default'   => 'rgba(0,0,0,0.72)',
+			'selectors' => [ '{{WRAPPER}} .gf-card-overlay' => 'background: linear-gradient(to top, {{VALUE}} 0%, transparent 72%);' ],
 		] );
 
 		$this->add_control( 'hover_zoom', [
@@ -896,11 +896,17 @@ class Elementor_Widget extends Widget_Base {
 						<?php if ( $title ) : ?>
 						<h3 class="gf-title"><?php echo esc_html( $title ); ?></h3>
 						<?php endif; ?>
-						<?php if ( ! empty( $tags ) ) : ?>
+						<?php if ( ! empty( $tags ) ) :
+							$shown_tags = array_slice( $tags, 0, 3 );
+							$extra_tags = count( $tags ) - count( $shown_tags );
+						?>
 						<div class="gf-tags" aria-label="Tags">
-							<?php foreach ( $tags as $tag ) : ?>
+							<?php foreach ( $shown_tags as $tag ) : ?>
 							<span class="gf-tag"><?php echo esc_html( $tag ); ?></span>
 							<?php endforeach; ?>
+							<?php if ( $extra_tags > 0 ) : ?>
+							<span class="gf-tag gf-tag--more">+<?php echo (int) $extra_tags; ?></span>
+							<?php endif; ?>
 						</div>
 						<?php endif; ?>
 						<?php if ( $show_desc_card && $description !== '' ) : ?>
