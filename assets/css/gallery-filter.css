@@ -275,6 +275,34 @@
 	overflow: hidden;
 }
 
+/* ── Location ── */
+.gf-location {
+	display: flex;
+	align-items: center;
+	gap: 5px;
+	margin: -4px 0 10px;
+	color: rgba(255, 255, 255, 0.9);
+	font-size: 13px;
+	font-weight: 500;
+}
+
+.gf-location .gf-pin {
+	flex-shrink: 0;
+	opacity: 0.9;
+}
+
+.gf-lb-location {
+	display: block;
+	margin-top: 3px;
+	font-size: 13px;
+	font-weight: 500;
+	opacity: 0.85;
+}
+
+.gf-lb-location:empty {
+	display: none;
+}
+
 /* ── Card Description ── */
 .gf-card-desc {
 	margin: 8px 0 0;

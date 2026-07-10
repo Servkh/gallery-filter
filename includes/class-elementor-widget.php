@@ -133,6 +133,14 @@ class Elementor_Widget extends Widget_Base {
 			'label_block' => true,
 		] );
 
+		$repeater->add_control( 'location', [
+			'label'       => 'Location',
+			'type'        => Controls_Manager::TEXT,
+			'default'     => '',
+			'placeholder' => 'e.g. Lebanon County',
+			'label_block' => true,
+		] );
+
 		$repeater->add_control( 'tags', [
 			'label'       => 'Tags',
 			'type'        => Controls_Manager::SELECT2,
@@ -167,6 +175,7 @@ class Elementor_Widget extends Widget_Base {
 					'images'   => [],
 					'title'    => 'Country Lane Driveway Restoration',
 					'category' => 'Residential',
+					'location' => 'Lebanon County',
 					'tags'     => [ 'Residential', 'New Installation', 'Stone Base', 'Drainage Solutions' ],
 					'description' => 'Complete driveway replacement for a rural property including excavation, stone base installation, and 2.5" of Superpave asphalt. We graded the surface for proper water runoff and installed a new stone base before paving.',
 				],
@@ -853,6 +862,7 @@ class Elementor_Widget extends Widget_Base {
 					$cat_name     = $item['category'];
 					$cat_slug     = $item['cat_slug'];
 					$tags         = $item['tags'];
+					$location     = $item['location'];
 					$description  = $item['description'];
 					$link         = $item['link'];
 					$is_ba        = ! empty( $item['is_ba'] );
@@ -866,6 +876,7 @@ class Elementor_Widget extends Widget_Base {
 					class="gf-card <?php echo esc_attr( $hover_zoom ); ?><?php echo $has_gallery ? ' gf-has-gallery' : ''; ?><?php echo $is_ba ? ' gf-card--ba' : ''; ?>"
 					data-categories="<?php echo esc_attr( $cat_slug ); ?>"
 					data-title="<?php echo esc_attr( $title ); ?>"
+					data-location="<?php echo esc_attr( $location ); ?>"
 					data-description="<?php echo esc_attr( $description ); ?>"
 					data-gallery="<?php echo esc_attr( $gallery_json ); ?>"
 					<?php if ( $is_ba ) : ?>data-ba="1" data-before="<?php echo esc_url( $before ); ?>" data-after="<?php echo esc_url( $after ); ?>"<?php endif; ?>
@@ -903,6 +914,9 @@ class Elementor_Widget extends Widget_Base {
 					<div class="gf-card-body">
 						<?php if ( $title ) : ?>
 						<h3 class="gf-title"><?php echo esc_html( $title ); ?></h3>
+						<?php endif; ?>
+						<?php if ( $location ) : ?>
+						<div class="gf-location"><?php echo $this->get_pin_svg(); ?><span><?php echo esc_html( $location ); ?></span></div>
 						<?php endif; ?>
 						<?php if ( ! empty( $tags ) ) :
 							$shown_tags = array_slice( $tags, 0, 3 );
@@ -973,6 +987,7 @@ class Elementor_Widget extends Widget_Base {
 				<div class="gf-lb-footer">
 					<div class="gf-lb-text">
 						<span class="gf-lb-title"></span>
+						<span class="gf-lb-location"></span>
 						<p class="gf-lb-desc"></p>
 					</div>
 					<span class="gf-lb-counter"></span>
@@ -1044,6 +1059,7 @@ class Elementor_Widget extends Widget_Base {
 				'title'       => $title,
 				'category'    => $cat,
 				'cat_slug'    => sanitize_title( $cat ),
+				'location'    => isset( $item['location'] ) ? $item['location'] : '',
 				'tags'        => array_values( $tags ),
 				'description' => isset( $item['description'] ) ? $item['description'] : '',
 				'link'        => $link,
@@ -1139,6 +1155,7 @@ class Elementor_Widget extends Widget_Base {
 				'title'       => $title,
 				'category'    => $cat,
 				'cat_slug'    => $cat_slug,
+				'location'    => get_post_meta( $pid, '_gf_location', true ),
 				'tags'        => array_values( $tags ),
 				'description' => trim( wp_strip_all_tags( $post->post_content ) ),
 				'link'        => $link,
@@ -1156,6 +1173,10 @@ class Elementor_Widget extends Widget_Base {
 
 	private function get_arrow_svg() {
 		return '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>';
+	}
+
+	private function get_pin_svg() {
+		return '<svg class="gf-pin" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>';
 	}
 
 	private function get_ba_grip_svg() {
