@@ -152,7 +152,8 @@
 		var lbBaAfter  = lb.querySelector( '.gf-lb-ba-after' );
 		var lbBaHandle = lb.querySelector( '.gf-lb-ba-handle' );
 
-		var images      = [];
+		// A "slide" is either { compare:true, before, after } or { compare:false, url, alt }.
+		var slides      = [];
 		var current     = 0;
 		var touchStartX = 0;
 		var compareMode = false;
@@ -170,24 +171,7 @@
 					card.__gfSlider.moved = false;
 					return;
 				}
-
-				if ( card.getAttribute( 'data-ba' ) ) {
-					openCompare( card );
-					return;
-				}
-
-				var raw = card.getAttribute( 'data-gallery' );
-				if ( ! raw ) return;
-				try { images = JSON.parse( raw ); } catch ( err ) { return; }
-				if ( ! images.length ) return;
-
-				current = 0;
-				setMode( false );
-				showImage( current );
-				revealLightbox(
-					card.getAttribute( 'data-title' ) || '',
-					card.getAttribute( 'data-description' ) || ''
-				);
+				openFromCard( card );
 			} );
 
 			// Keyboard: Enter / Space opens the lightbox
@@ -199,31 +183,69 @@
 			} );
 		} );
 
-		function openCompare( card ) {
+		function openFromCard( card ) {
+			slides = [];
+
+			// Before/After comparison comes first (if a pair is set)
 			var before = card.getAttribute( 'data-before' );
 			var after  = card.getAttribute( 'data-after' );
-			if ( ! before || ! after || ! lbBa ) return;
+			if ( lbBa && card.getAttribute( 'data-ba' ) && before && after ) {
+				slides.push( { compare: true, before: before, after: after } );
+			}
 
-			setMode( true );
-			lbBaBefore.src = before;
-			lbBaAfter.src  = after;
-			lbBa.style.setProperty( '--gf-ba-pos', '50%' );
-			if ( lbBaHandle ) lbBaHandle.setAttribute( 'aria-valuenow', '50' );
+			// Then any gallery images
+			var raw = card.getAttribute( 'data-gallery' );
+			if ( raw ) {
+				try {
+					JSON.parse( raw ).forEach( function ( im ) {
+						if ( im && im.url ) slides.push( { compare: false, url: im.url, alt: im.alt || '' } );
+					} );
+				} catch ( err ) {}
+			}
 
+			if ( ! slides.length ) return;
+
+			current = 0;
+			showSlide( 0 );
 			revealLightbox(
 				card.getAttribute( 'data-title' ) || '',
 				card.getAttribute( 'data-description' ) || ''
 			);
 		}
 
-		function setMode( compare ) {
-			compareMode = compare;
-			if ( compare ) {
+		function showSlide( idx ) {
+			var s = slides[ idx ];
+			if ( ! s ) return;
+
+			if ( s.compare ) {
+				setCompare( true );
+				lbBaBefore.src = s.before;
+				lbBaAfter.src  = s.after;
+				lbBa.style.setProperty( '--gf-ba-pos', '50%' );
+				if ( lbBaHandle ) lbBaHandle.setAttribute( 'aria-valuenow', '50' );
+			} else {
+				setCompare( false );
+				lbImg.classList.remove( 'gf-lb-img--loaded' );
+				// Attach the handler before setting src so cached images still fire it.
+				lbImg.onload = function () { lbImg.classList.add( 'gf-lb-img--loaded' ); };
+				lbImg.src = s.url;
+				lbImg.alt = s.alt || '';
+				if ( lbImg.complete && lbImg.naturalWidth ) {
+					lbImg.classList.add( 'gf-lb-img--loaded' );
+				}
+			}
+
+			var multi = slides.length > 1;
+			btnPrev.style.display = multi ? '' : 'none';
+			btnNext.style.display = multi ? '' : 'none';
+			lbCounter.textContent = multi ? ( idx + 1 ) + ' / ' + slides.length : '';
+		}
+
+		function setCompare( on ) {
+			compareMode = on;
+			if ( on ) {
 				lbImg.style.display = 'none';
 				if ( lbBa ) lbBa.hidden = false;
-				btnPrev.style.display = 'none';
-				btnNext.style.display = 'none';
-				lbCounter.textContent = '';
 			} else {
 				lbImg.style.display = '';
 				if ( lbBa ) lbBa.hidden = true;
@@ -244,40 +266,20 @@
 		function closeLightbox() {
 			lb.hidden = true;
 			document.body.classList.remove( 'gf-lb-open' );
-			images  = [];
+			slides  = [];
 			current = 0;
 		}
 
-		// ── Show image (gallery mode) ──
-
-		function showImage( idx ) {
-			var img = images[ idx ];
-			lbImg.classList.remove( 'gf-lb-img--loaded' );
-			// Attach the handler before setting src so cached images still fire it,
-			// and reveal immediately if the image is already complete.
-			lbImg.onload = function () {
-				lbImg.classList.add( 'gf-lb-img--loaded' );
-			};
-			lbImg.src = img.url;
-			lbImg.alt = img.alt || '';
-			if ( lbImg.complete && lbImg.naturalWidth ) {
-				lbImg.classList.add( 'gf-lb-img--loaded' );
-			}
-			lbCounter.textContent = ( idx + 1 ) + ' / ' + images.length;
-			btnPrev.style.display = images.length > 1 ? '' : 'none';
-			btnNext.style.display = images.length > 1 ? '' : 'none';
-		}
-
 		function prev() {
-			if ( ! images.length ) return;
-			current = ( current - 1 + images.length ) % images.length;
-			showImage( current );
+			if ( slides.length < 2 ) return;
+			current = ( current - 1 + slides.length ) % slides.length;
+			showSlide( current );
 		}
 
 		function next() {
-			if ( ! images.length ) return;
-			current = ( current + 1 ) % images.length;
-			showImage( current );
+			if ( slides.length < 2 ) return;
+			current = ( current + 1 ) % slides.length;
+			showSlide( current );
 		}
 
 		// ── Controls ──
@@ -291,13 +293,13 @@
 		lb.setAttribute( 'tabindex', '-1' );
 		document.addEventListener( 'keydown', function ( e ) {
 			if ( lb.hidden ) return;
-			if ( e.key === 'Escape' ) { closeLightbox(); return; }
-			if ( compareMode ) return; // slider handle manages its own arrow keys
+			if ( e.key === 'Escape' )     { closeLightbox(); return; }
 			if ( e.key === 'ArrowLeft' )  prev();
 			if ( e.key === 'ArrowRight' ) next();
 		} );
 
-		// Touch swipe (gallery mode only — comparison mode uses the slider drag)
+		// Touch swipe navigates slides — but not while on a comparison slide,
+		// where horizontal touch drives the slider handle instead.
 		lb.addEventListener( 'touchstart', function ( e ) {
 			if ( compareMode ) return;
 			touchStartX = e.changedTouches[0].screenX;

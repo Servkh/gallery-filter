@@ -26,6 +26,12 @@ class Elementor_Widget extends Widget_Base {
 	public function get_categories() { return [ 'general' ]; }
 	public function get_keywords()   { return [ 'gallery', 'filter', 'portfolio', 'projects', 'grid', 'images' ]; }
 
+	// Tell Elementor which assets this widget needs, so they load on the
+	// front end AND inside the editor preview (where render()-time enqueues
+	// don't reach the iframe).
+	public function get_style_depends()  { return [ 'gallery-filter' ]; }
+	public function get_script_depends() { return [ 'gallery-filter' ]; }
+
 	// ── Controls ──────────────────────────────────────────────────────────────
 
 	protected function register_controls() {
@@ -86,14 +92,14 @@ class Elementor_Widget extends Widget_Base {
 		$repeater->add_control( 'images', [
 			'label'       => 'Images',
 			'type'        => Controls_Manager::GALLERY,
-			'description' => 'First image is the card cover; all images open in the lightbox. (Ignored if a Before + After pair is set below.)',
+			'description' => 'First image is the card cover; all images open in the lightbox. If a Before/After pair is also set, the comparison shows first and these images follow it.',
 			'default'     => [],
 		] );
 
 		$repeater->add_control( 'before_image', [
 			'label'       => 'Before Image',
 			'type'        => Controls_Manager::MEDIA,
-			'description' => 'Set both Before and After to show a draggable comparison slider instead of the gallery.',
+			'description' => 'Set both Before and After to show a draggable comparison slider on the card. Gallery images above still open in the lightbox after it.',
 			'default'     => [ 'url' => '' ],
 		] );
 
