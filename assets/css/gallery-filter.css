@@ -475,10 +475,12 @@ body.gf-lb-open {
 	position: fixed;
 	top: 18px;
 	right: 18px;
-	z-index: 2;
+	z-index: 5;
 	width: 44px;
 	height: 44px;
-	background: rgba(255, 255, 255, 0.12);
+	/* Dark, so the white icon stays visible over bright images (e.g. the
+	   full-bleed before/after comparison), not just over the dark backdrop. */
+	background: rgba(0, 0, 0, 0.55);
 	border: none;
 	border-radius: 50%;
 	color: #fff;
@@ -486,11 +488,14 @@ body.gf-lb-open {
 	align-items: center;
 	justify-content: center;
 	cursor: pointer;
+	box-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
+	backdrop-filter: blur(4px);
+	-webkit-backdrop-filter: blur(4px);
 	transition: background 0.2s ease;
 }
 
 .gf-lb-close:hover {
-	background: rgba(255, 255, 255, 0.25);
+	background: rgba(0, 0, 0, 0.8);
 }
 
 /* Prev / Next buttons */
@@ -499,10 +504,10 @@ body.gf-lb-open {
 	position: fixed;
 	top: 50%;
 	transform: translateY(-50%);
-	z-index: 2;
+	z-index: 5;
 	width: 52px;
 	height: 52px;
-	background: rgba(255, 255, 255, 0.12);
+	background: rgba(0, 0, 0, 0.55);
 	border: none;
 	border-radius: 50%;
 	color: #fff;
@@ -510,14 +515,17 @@ body.gf-lb-open {
 	align-items: center;
 	justify-content: center;
 	cursor: pointer;
+	box-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
+	backdrop-filter: blur(4px);
+	-webkit-backdrop-filter: blur(4px);
 	transition: background 0.2s ease, transform 0.2s ease;
 }
 
 .gf-lb-prev { left: 18px; }
 .gf-lb-next { right: 18px; }
 
-.gf-lb-prev:hover { background: rgba(255,255,255,0.25); transform: translateY(-50%) scale(1.08); }
-.gf-lb-next:hover { background: rgba(255,255,255,0.25); transform: translateY(-50%) scale(1.08); }
+.gf-lb-prev:hover { background: rgba(0,0,0,0.8); transform: translateY(-50%) scale(1.08); }
+.gf-lb-next:hover { background: rgba(0,0,0,0.8); transform: translateY(-50%) scale(1.08); }
 
 /* Footer: title + description + counter */
 .gf-lb-footer {

@@ -4,7 +4,7 @@ Tags: gallery, filter, portfolio, elementor, before-after
 Requires at least: 5.8
 Tested up to: 6.6
 Requires PHP: 7.4
-Stable tag: 1.3.1
+Stable tag: 1.3.2
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -53,6 +53,9 @@ No. Projects are stored in the WordPress database, not in the plugin folder. Upd
 Reload the editor after updating so it loads the current CSS/JS (browsers cache assets aggressively). Fixed in 1.3.1.
 
 == Changelog ==
+
+= 1.3.2 =
+* Fix: lightbox close and prev/next buttons now use a dark background so their icons stay visible over the full-bleed before/after comparison (they previously disappeared against bright images).
 
 = 1.3.1 =
 * Fix: plugin CSS/JS now load inside the Elementor editor preview (grid/card layout no longer appears broken in the editor).
