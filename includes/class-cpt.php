@@ -121,6 +121,7 @@ class CPT {
 		wp_nonce_field( 'gf_save_meta', 'gf_meta_nonce' );
 
 		$tags        = get_post_meta( $post->ID, '_gf_tags', true );
+		$location    = get_post_meta( $post->ID, '_gf_location', true );
 		$link        = get_post_meta( $post->ID, '_gf_link', true );
 		$link_target = get_post_meta( $post->ID, '_gf_link_target', true );
 
@@ -216,6 +217,21 @@ class CPT {
 		<table class="gf-meta-table">
 			<tr>
 				<th>
+					<label for="gf_location">Location</label>
+					<small>Optional — e.g. Lebanon County</small>
+				</th>
+				<td>
+					<input
+						type="text"
+						id="gf_location"
+						name="gf_location"
+						value="<?php echo esc_attr( $location ); ?>"
+						placeholder="Lebanon County"
+					/>
+				</td>
+			</tr>
+			<tr>
+				<th>
 					<label for="gf_link">Link URL</label>
 					<small>Optional — makes arrow clickable</small>
 				</th>
@@ -270,6 +286,9 @@ class CPT {
 			$allowed
 		) );
 		update_post_meta( $post_id, '_gf_tags', implode( ', ', $selected ) );
+		if ( isset( $_POST['gf_location'] ) ) {
+			update_post_meta( $post_id, '_gf_location', sanitize_text_field( wp_unslash( $_POST['gf_location'] ) ) );
+		}
 		if ( isset( $_POST['gf_link'] ) ) {
 			update_post_meta( $post_id, '_gf_link', esc_url_raw( wp_unslash( $_POST['gf_link'] ) ) );
 		}

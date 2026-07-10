@@ -140,6 +140,7 @@
 
 		var lbImg      = lb.querySelector( '.gf-lb-img' );
 		var lbTitle    = lb.querySelector( '.gf-lb-title' );
+		var lbLocation = lb.querySelector( '.gf-lb-location' );
 		var lbDesc     = lb.querySelector( '.gf-lb-desc' );
 		var lbCounter  = lb.querySelector( '.gf-lb-counter' );
 		var btnClose   = lb.querySelector( '.gf-lb-close' );
@@ -209,7 +210,8 @@
 			showSlide( 0 );
 			revealLightbox(
 				card.getAttribute( 'data-title' ) || '',
-				card.getAttribute( 'data-description' ) || ''
+				card.getAttribute( 'data-description' ) || '',
+				card.getAttribute( 'data-location' ) || ''
 			);
 		}
 
@@ -252,8 +254,12 @@
 			}
 		}
 
-		function revealLightbox( title, description ) {
+		function revealLightbox( title, description, location ) {
 			lbTitle.textContent = title;
+			if ( lbLocation ) {
+				lbLocation.textContent   = location || '';
+				lbLocation.style.display = location ? '' : 'none';
+			}
 			if ( lbDesc ) {
 				lbDesc.textContent   = description || '';
 				lbDesc.style.display = description ? '' : 'none';
