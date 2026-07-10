@@ -4,7 +4,7 @@ Tags: gallery, filter, portfolio, elementor, before-after
 Requires at least: 5.8
 Tested up to: 6.6
 Requires PHP: 7.4
-Stable tag: 1.3.4
+Stable tag: 1.4.0
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -53,6 +53,9 @@ No. Projects are stored in the WordPress database, not in the plugin folder. Upd
 Reload the editor after updating so it loads the current CSS/JS (browsers cache assets aggressively). Fixed in 1.3.1.
 
 == Changelog ==
+
+= 1.4.0 =
+* Improve: card design polish — titles are capped to 2 lines at a sensible size (no more oversized, overrunning headings), a taller/softer overlay keeps them readable without darkening the whole photo, tags are limited to 3 with a "+N" pill so rows line up, and clickable cards get a subtle hover lift.
 
 = 1.3.4 =
 * Improve: much larger, higher-contrast lightbox controls — bigger close, prev/next, and comparison-handle buttons with a white ring and larger icons so they're clearly visible on any image.
