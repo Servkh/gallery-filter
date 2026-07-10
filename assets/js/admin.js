@@ -77,6 +77,42 @@
 				syncIds();
 			} );
 		} );
+
+		// ── Single-image pickers (Before / After) ──
+		$( '.gf-single-field' ).each( function () {
+			var $field   = $( this );
+			var $id      = $field.find( '.gf-single-id' );
+			var $preview = $field.find( '.gf-single-preview' );
+			var $remove  = $field.find( '.gf-single-remove' );
+
+			$field.on( 'click', '.gf-single-add', function ( e ) {
+				e.preventDefault();
+
+				var frame = wp.media( {
+					title:    'Select Image',
+					multiple: false,
+					library:  { type: 'image' },
+					button:   { text: 'Use this image' }
+				} );
+
+				frame.on( 'select', function () {
+					var att = frame.state().get( 'selection' ).first().toJSON();
+					var url = ( att.sizes && att.sizes.medium ) ? att.sizes.medium.url : att.url;
+					$id.val( att.id );
+					$preview.addClass( 'has-image' ).html( '<img src="' + url + '" alt="" />' );
+					$remove.show();
+				} );
+
+				frame.open();
+			} );
+
+			$field.on( 'click', '.gf-single-remove', function ( e ) {
+				e.preventDefault();
+				$id.val( '' );
+				$preview.removeClass( 'has-image' ).empty();
+				$( this ).hide();
+			} );
+		} );
 	} );
 
 } )( jQuery );

@@ -126,6 +126,86 @@
 	background: linear-gradient(135deg, #2a2a2a 0%, #444 100%);
 }
 
+/* ── Before / After Slider (card) ── */
+.gf-card--ba {
+	--gf-ba-pos: 50%;
+	user-select: none;
+	-webkit-user-select: none;
+}
+
+.gf-ba {
+	position: absolute;
+	inset: 0;
+	overflow: hidden;
+	touch-action: pan-y;
+}
+
+.gf-ba-img {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+	pointer-events: none;
+	-webkit-user-drag: none;
+}
+
+.gf-ba-before {
+	clip-path: inset(0 calc(100% - var(--gf-ba-pos)) 0 0);
+}
+
+.gf-ba-handle {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: var(--gf-ba-pos);
+	width: 2px;
+	margin-left: -1px;
+	background: #ffffff;
+	z-index: 4;
+	cursor: ew-resize;
+}
+
+.gf-ba-grip {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 34px;
+	height: 34px;
+	border-radius: 50%;
+	background: #ffffff;
+	color: #1a1a1a;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+	pointer-events: none;
+}
+
+.gf-ba-label {
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	z-index: 4;
+	padding: 3px 10px;
+	border-radius: 20px;
+	background: rgba(0, 0, 0, 0.6);
+	color: #ffffff;
+	font-size: 11px;
+	font-weight: 600;
+	letter-spacing: 0.03em;
+	text-transform: uppercase;
+	pointer-events: none;
+}
+
+.gf-ba-label--before { left: 12px; }
+.gf-ba-label--after  { right: 12px; }
+
+/* Zoom-on-hover shouldn't apply to comparison cards */
+.gf-card--ba.gf-zoom .gf-ba-img { transition: none; transform: none; }
+
 /* ── Overlay ── */
 .gf-card-overlay {
 	position: absolute;
@@ -318,6 +398,77 @@ body.gf-lb-open {
 .gf-lb-img.gf-lb-img--loaded {
 	opacity: 1;
 }
+
+/* ── Before / After Slider (lightbox) ── */
+.gf-lb-ba {
+	position: relative;
+	z-index: 1;
+	display: inline-block;
+	line-height: 0;
+	--gf-ba-pos: 50%;
+	touch-action: pan-y;
+	user-select: none;
+	-webkit-user-select: none;
+}
+
+.gf-lb-ba[hidden] {
+	display: none;
+}
+
+.gf-lb-ba-img {
+	display: block;
+	-webkit-user-drag: none;
+}
+
+.gf-lb-ba-after {
+	max-width: 90vw;
+	max-height: 80vh;
+	width: auto;
+	height: auto;
+	border-radius: 6px;
+}
+
+.gf-lb-ba-before {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	border-radius: 6px;
+	clip-path: inset(0 calc(100% - var(--gf-ba-pos)) 0 0);
+}
+
+.gf-lb-ba-handle {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: var(--gf-ba-pos);
+	width: 3px;
+	margin-left: -1.5px;
+	background: #ffffff;
+	z-index: 3;
+	cursor: ew-resize;
+}
+
+.gf-lb-ba-handle:focus-visible {
+	outline: 3px solid #ffffff;
+	outline-offset: 3px;
+}
+
+.gf-lb-ba-grip {
+	width: 44px;
+	height: 44px;
+}
+
+.gf-lb-ba-label {
+	top: 16px;
+	transform: none;
+	font-size: 12px;
+	padding: 4px 12px;
+}
+
+.gf-lb-ba-label--before { left: 16px; right: auto; }
+.gf-lb-ba-label--after  { right: 16px; left: auto; }
 
 /* Close button */
 .gf-lb-close {

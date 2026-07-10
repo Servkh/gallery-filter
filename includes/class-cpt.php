@@ -126,6 +126,9 @@ class CPT {
 
 		$gallery = get_post_meta( $post->ID, '_gf_gallery', true );
 		$gallery = is_array( $gallery ) ? array_filter( array_map( 'intval', $gallery ) ) : [];
+
+		$before_id = (int) get_post_meta( $post->ID, '_gf_before', true );
+		$after_id  = (int) get_post_meta( $post->ID, '_gf_after', true );
 		?>
 		<style>
 			.gf-meta-table { width: 100%; border-collapse: collapse; }
@@ -142,7 +145,37 @@ class CPT {
 			.gf-gallery-remove { position: absolute; top: 2px; right: 2px; width: 20px; height: 20px; line-height: 18px; text-align: center; padding: 0; border: none; border-radius: 50%; background: rgba(0,0,0,0.65); color: #fff; font-size: 15px; cursor: pointer; }
 			.gf-gallery-remove:hover { background: #b32d2e; }
 			.gf-gallery-empty { color: #777; margin: 0 0 10px; font-style: italic; }
+			.gf-ba-fields { display: flex; flex-wrap: wrap; gap: 20px; margin: 4px 0 18px; }
+			.gf-single-field { flex: 1; min-width: 200px; }
+			.gf-single-field > strong { display: block; margin-bottom: 6px; }
+			.gf-single-preview { width: 120px; height: 90px; border-radius: 4px; overflow: hidden; background: #f0f0f1; box-shadow: 0 0 0 1px rgba(0,0,0,0.1); margin-bottom: 8px; display: none; }
+			.gf-single-preview img { width: 100%; height: 100%; object-fit: cover; display: block; }
+			.gf-single-preview.has-image { display: block; }
 		</style>
+
+		<p style="margin:0 0 4px;font-weight:600;">Before / After Slider
+			<small style="color:#777;font-weight:normal;display:block;">Set <strong>both</strong> a Before and an After image to turn this project into a draggable comparison slider (on the card and in the lightbox). Leave empty to use the normal gallery.</small>
+		</p>
+		<div class="gf-ba-fields">
+			<div class="gf-single-field" data-meta="gf_before">
+				<strong>Before Image</strong>
+				<div class="gf-single-preview<?php echo $before_id ? ' has-image' : ''; ?>">
+					<?php if ( $before_id ) echo wp_get_attachment_image( $before_id, [ 120, 90 ] ); ?>
+				</div>
+				<input type="hidden" name="gf_before" class="gf-single-id" value="<?php echo esc_attr( $before_id ?: '' ); ?>" />
+				<button type="button" class="button gf-single-add">Select Before</button>
+				<button type="button" class="button-link gf-single-remove" style="margin-left:6px;color:#b32d2e;<?php echo $before_id ? '' : 'display:none;'; ?>">Remove</button>
+			</div>
+			<div class="gf-single-field" data-meta="gf_after">
+				<strong>After Image</strong>
+				<div class="gf-single-preview<?php echo $after_id ? ' has-image' : ''; ?>">
+					<?php if ( $after_id ) echo wp_get_attachment_image( $after_id, [ 120, 90 ] ); ?>
+				</div>
+				<input type="hidden" name="gf_after" class="gf-single-id" value="<?php echo esc_attr( $after_id ?: '' ); ?>" />
+				<button type="button" class="button gf-single-add">Select After</button>
+				<button type="button" class="button-link gf-single-remove" style="margin-left:6px;color:#b32d2e;<?php echo $after_id ? '' : 'display:none;'; ?>">Remove</button>
+			</div>
+		</div>
 
 		<p style="margin:0 0 4px;font-weight:600;">Gallery Images
 			<small style="color:#777;font-weight:normal;display:block;">Before / after and any extra photos. Shown in the lightbox. Set a <strong>Featured Image</strong> (right sidebar) to use as the card cover — it is added first in the lightbox automatically.</small>
@@ -242,6 +275,17 @@ class CPT {
 				explode( ',', sanitize_text_field( wp_unslash( $_POST['gf_gallery'] ) ) )
 			) ) );
 			update_post_meta( $post_id, '_gf_gallery', $ids );
+		}
+
+		foreach ( [ 'gf_before' => '_gf_before', 'gf_after' => '_gf_after' ] as $field => $meta ) {
+			if ( isset( $_POST[ $field ] ) ) {
+				$id = intval( $_POST[ $field ] );
+				if ( $id > 0 ) {
+					update_post_meta( $post_id, $meta, $id );
+				} else {
+					delete_post_meta( $post_id, $meta );
+				}
+			}
 		}
 	}
 
