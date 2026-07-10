@@ -24,7 +24,7 @@ jobs:
         run: |
           VERSION="${GITHUB_REF_NAME#v}"
           mkdir -p build/gallery-filter
-          cp gallery-filter.php build/gallery-filter/
+          cp gallery-filter.php readme.txt build/gallery-filter/
           cp -r includes assets build/gallery-filter/
           ( cd build && zip -rq "../gallery-filter-${VERSION}.zip" gallery-filter -x '*.DS_Store' )
           echo "zip=gallery-filter-${VERSION}.zip" >> "$GITHUB_OUTPUT"
