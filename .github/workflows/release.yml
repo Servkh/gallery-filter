@@ -1,0 +1,38 @@
+name: Release plugin
+
+# Publishes an installable plugin ZIP as a GitHub Release asset whenever a
+# version tag (e.g. v1.1.0) is pushed. The ZIP's top-level folder is
+# "gallery-filter" so WordPress recognizes uploads as an update, not a new plugin.
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build plugin ZIP
+        id: build
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          mkdir -p build/gallery-filter
+          cp gallery-filter.php build/gallery-filter/
+          cp -r includes assets build/gallery-filter/
+          ( cd build && zip -rq "../gallery-filter-${VERSION}.zip" gallery-filter -x '*.DS_Store' )
+          echo "zip=gallery-filter-${VERSION}.zip" >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" "${{ steps.build.outputs.zip }}" \
+            --title "Gallery Filter $GITHUB_REF_NAME" \
+            --generate-notes

@@ -168,6 +168,19 @@
 	margin: 0 0 10px;
 }
 
+/* ── Card Description ── */
+.gf-card-desc {
+	margin: 8px 0 0;
+	color: rgba(255, 255, 255, 0.85);
+	font-size: 13px;
+	line-height: 1.5;
+	/* Clamp to a set number of lines (count is controllable in Elementor) */
+	display: -webkit-box;
+	-webkit-line-clamp: 3;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+}
+
 /* ── Tags ── */
 .gf-tags {
 	display: flex;
