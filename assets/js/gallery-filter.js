@@ -64,6 +64,7 @@
 
 		var lbImg     = lb.querySelector( '.gf-lb-img' );
 		var lbTitle   = lb.querySelector( '.gf-lb-title' );
+		var lbDesc    = lb.querySelector( '.gf-lb-desc' );
 		var lbCounter = lb.querySelector( '.gf-lb-counter' );
 		var btnClose  = lb.querySelector( '.gf-lb-close' );
 		var btnPrev   = lb.querySelector( '.gf-lb-prev' );
@@ -87,7 +88,10 @@
 				if ( ! images.length ) return;
 
 				current = 0;
-				openLightbox( card.getAttribute( 'data-title' ) || '' );
+				openLightbox(
+					card.getAttribute( 'data-title' ) || '',
+					card.getAttribute( 'data-description' ) || ''
+				);
 			} );
 
 			// Keyboard: Enter / Space opens lightbox
@@ -99,8 +103,12 @@
 			} );
 		} );
 
-		function openLightbox( title ) {
+		function openLightbox( title, description ) {
 			lbTitle.textContent = title;
+			if ( lbDesc ) {
+				lbDesc.textContent   = description || '';
+				lbDesc.style.display = description ? '' : 'none';
+			}
 			showImage( current );
 			lb.hidden = false;
 			document.body.classList.add( 'gf-lb-open' );
@@ -119,11 +127,16 @@
 		function showImage( idx ) {
 			var img = images[ idx ];
 			lbImg.classList.remove( 'gf-lb-img--loaded' );
-			lbImg.src = img.url;
-			lbImg.alt = img.alt || '';
+			// Attach the handler before setting src so cached images still fire it,
+			// and reveal immediately if the image is already complete.
 			lbImg.onload = function () {
 				lbImg.classList.add( 'gf-lb-img--loaded' );
 			};
+			lbImg.src = img.url;
+			lbImg.alt = img.alt || '';
+			if ( lbImg.complete && lbImg.naturalWidth ) {
+				lbImg.classList.add( 'gf-lb-img--loaded' );
+			}
 			lbCounter.textContent = ( idx + 1 ) + ' / ' + images.length;
 			btnPrev.style.display = images.length > 1 ? '' : 'none';
 			btnNext.style.display = images.length > 1 ? '' : 'none';
