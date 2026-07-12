@@ -206,6 +206,17 @@ class Elementor_Widget extends Widget_Base {
 			'tab'   => Controls_Manager::TAB_CONTENT,
 		] );
 
+		$this->add_control( 'layout_style', [
+			'label'       => 'Layout Style',
+			'type'        => Controls_Manager::SELECT,
+			'default'     => 'grid',
+			'options'     => [
+				'grid'    => 'Grid (uniform cards)',
+				'masonry' => 'Masonry (natural heights)',
+			],
+			'description' => 'Grid crops every card to the same height. Masonry keeps each image’s natural proportions (Pinterest-style) and reveals the title on hover.',
+		] );
+
 		$this->add_control( 'columns', [
 			'label'   => 'Columns (Desktop)',
 			'type'    => Controls_Manager::SELECT,
@@ -233,7 +244,8 @@ class Elementor_Widget extends Widget_Base {
 			'size_units' => [ 'px', 'vh' ],
 			'range'      => [ 'px' => [ 'min' => 150, 'max' => 800 ], 'vh' => [ 'min' => 10, 'max' => 80 ] ],
 			'default'    => [ 'unit' => 'px', 'size' => 450 ],
-			'selectors'  => [ '{{WRAPPER}} .gf-card' => 'height: {{SIZE}}{{UNIT}};' ],
+			'selectors'  => [ '{{WRAPPER}} .gf-grid:not(.gf-grid--masonry) .gf-card' => 'height: {{SIZE}}{{UNIT}};' ],
+			'condition'  => [ 'layout_style' => 'grid' ],
 		] );
 
 		$this->add_control( 'show_desc_on_card', [
@@ -425,7 +437,8 @@ class Elementor_Widget extends Widget_Base {
 			'size_units'=> [ 'px' ],
 			'range'     => [ 'px' => [ 'min' => 0, 'max' => 60 ] ],
 			'default'   => [ 'unit' => 'px', 'size' => 20 ],
-			'selectors' => [ '{{WRAPPER}} .gf-grid' => 'gap: {{SIZE}}{{UNIT}};' ],
+			// gap for the grid layout; column-gap + --gf-gap drive the masonry layout.
+			'selectors' => [ '{{WRAPPER}} .gf-grid' => 'gap: {{SIZE}}{{UNIT}}; column-gap: {{SIZE}}{{UNIT}}; --gf-gap: {{SIZE}}{{UNIT}};' ],
 		] );
 
 		$this->add_control( 'card_radius', [
@@ -824,6 +837,8 @@ class Elementor_Widget extends Widget_Base {
 		$columns_tablet = intval( $settings['columns_tablet'] );
 		$columns_mobile = intval( $settings['columns_mobile'] );
 		$hover_zoom     = $settings['hover_zoom'] === 'yes' ? 'gf-zoom' : '';
+		$layout_style   = ! empty( $settings['layout_style'] ) ? $settings['layout_style'] : 'grid';
+		$grid_class     = 'gf-grid' . ( $layout_style === 'masonry' ? ' gf-grid--masonry' : '' );
 		$show_desc_card = ! empty( $settings['show_desc_on_card'] ) && $settings['show_desc_on_card'] === 'yes';
 		$show_ba_labels = ! isset( $settings['show_ba_labels'] ) || $settings['show_ba_labels'] === 'yes';
 		$before_label   = ! empty( $settings['before_label'] ) ? $settings['before_label'] : 'Before';
@@ -853,7 +868,7 @@ class Elementor_Widget extends Widget_Base {
 			</div>
 			<?php endif; ?>
 
-			<div class="gf-grid">
+			<div class="<?php echo esc_attr( $grid_class ); ?>">
 				<?php foreach ( $items as $item ) :
 					$images       = $item['images'];
 					$img_url      = ! empty( $images[0]['url'] ) ? $images[0]['url'] : '';

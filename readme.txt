@@ -4,7 +4,7 @@ Tags: gallery, filter, portfolio, elementor, before-after
 Requires at least: 5.8
 Tested up to: 6.6
 Requires PHP: 7.4
-Stable tag: 1.6.0
+Stable tag: 1.7.0
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -53,6 +53,9 @@ No. Projects are stored in the WordPress database, not in the plugin folder. Upd
 Reload the editor after updating so it loads the current CSS/JS (browsers cache assets aggressively). Fixed in 1.3.1.
 
 == Changelog ==
+
+= 1.7.0 =
+* New: a "Masonry" layout style (Layout → Layout Style) that keeps each image's natural proportions and reveals the title/category on hover — alongside the existing uniform Grid, which stays the default so nothing changes unless you choose Masonry.
 
 = 1.6.0 =
 * New: a Location field per project (e.g. "Lebanon County") — shown under the title on the card (with a pin icon) and in the lightbox. Available on both the project screen and the Elementor widget.
