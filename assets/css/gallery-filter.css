@@ -75,6 +75,64 @@
 	}
 }
 
+/* ── Masonry layout ── */
+.gf-grid--masonry {
+	display: block;
+	grid-template-columns: none;
+	column-count: var(--gf-cols-desktop, 3);
+}
+
+@media (max-width: 1024px) {
+	.gf-grid--masonry { column-count: var(--gf-cols-tablet, 2); }
+}
+
+@media (max-width: 600px) {
+	.gf-grid--masonry { column-count: var(--gf-cols-mobile, 1); }
+}
+
+.gf-grid--masonry .gf-card {
+	height: auto;
+	width: 100%;
+	margin: 0 0 var(--gf-gap, 20px);
+	break-inside: avoid;
+	-webkit-column-break-inside: avoid;
+}
+
+/* Natural image height — the whole point of masonry */
+.gf-grid--masonry .gf-card-img {
+	height: auto !important;
+	width: 100% !important;
+}
+
+.gf-grid--masonry .gf-card-no-img { height: 240px; }
+
+/* Before/After cards have absolutely-positioned images, so give them a
+   defined box in masonry or they'd collapse to zero height. */
+.gf-grid--masonry .gf-card--ba {
+	aspect-ratio: 4 / 3;
+}
+
+/* Keep images clean; reveal the info on hover (like a portfolio grid) */
+.gf-grid--masonry .gf-card-overlay,
+.gf-grid--masonry .gf-card-body,
+.gf-grid--masonry .gf-badge,
+.gf-grid--masonry .gf-arrow,
+.gf-grid--masonry .gf-photo-count {
+	opacity: 0;
+	transition: opacity 0.25s ease;
+}
+
+.gf-grid--masonry .gf-card:hover .gf-card-overlay,
+.gf-grid--masonry .gf-card:hover .gf-card-body,
+.gf-grid--masonry .gf-card:hover .gf-badge,
+.gf-grid--masonry .gf-card:hover .gf-arrow,
+.gf-grid--masonry .gf-card:focus-visible .gf-card-overlay,
+.gf-grid--masonry .gf-card:focus-visible .gf-card-body,
+.gf-grid--masonry .gf-card:focus-visible .gf-badge,
+.gf-grid--masonry .gf-card:focus-visible .gf-arrow {
+	opacity: 1;
+}
+
 /* ── Card ── */
 .gf-card {
 	position: relative;
