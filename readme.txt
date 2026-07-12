@@ -4,7 +4,7 @@ Tags: gallery, filter, portfolio, elementor, before-after
 Requires at least: 5.8
 Tested up to: 6.6
 Requires PHP: 7.4
-Stable tag: 1.7.0
+Stable tag: 1.7.1
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -54,8 +54,11 @@ Reload the editor after updating so it loads the current CSS/JS (browsers cache 
 
 == Changelog ==
 
+= 1.7.1 =
+* Change: in the Masonry layout, the title, location, tags, badge, and arrow now stay visible just like the Grid layout — only the layout (natural image heights) differs.
+
 = 1.7.0 =
-* New: a "Masonry" layout style (Layout → Layout Style) that keeps each image's natural proportions and reveals the title/category on hover — alongside the existing uniform Grid, which stays the default so nothing changes unless you choose Masonry.
+* New: a "Masonry" layout style (Layout → Layout Style) that keeps each image's natural proportions — alongside the existing uniform Grid, which stays the default so nothing changes unless you choose Masonry.
 
 = 1.6.0 =
 * New: a Location field per project (e.g. "Lebanon County") — shown under the title on the card (with a pin icon) and in the lightbox. Available on both the project screen and the Elementor widget.
