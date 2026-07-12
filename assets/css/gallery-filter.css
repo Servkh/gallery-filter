@@ -112,26 +112,8 @@
 	aspect-ratio: 4 / 3;
 }
 
-/* Keep images clean; reveal the info on hover (like a portfolio grid) */
-.gf-grid--masonry .gf-card-overlay,
-.gf-grid--masonry .gf-card-body,
-.gf-grid--masonry .gf-badge,
-.gf-grid--masonry .gf-arrow,
-.gf-grid--masonry .gf-photo-count {
-	opacity: 0;
-	transition: opacity 0.25s ease;
-}
-
-.gf-grid--masonry .gf-card:hover .gf-card-overlay,
-.gf-grid--masonry .gf-card:hover .gf-card-body,
-.gf-grid--masonry .gf-card:hover .gf-badge,
-.gf-grid--masonry .gf-card:hover .gf-arrow,
-.gf-grid--masonry .gf-card:focus-visible .gf-card-overlay,
-.gf-grid--masonry .gf-card:focus-visible .gf-card-body,
-.gf-grid--masonry .gf-card:focus-visible .gf-badge,
-.gf-grid--masonry .gf-card:focus-visible .gf-arrow {
-	opacity: 1;
-}
+/* Masonry keeps everything a Grid card shows — title, location, tags,
+   badge, and arrow all stay visible; only the layout differs. */
 
 /* ── Card ── */
 .gf-card {

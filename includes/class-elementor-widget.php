@@ -214,7 +214,7 @@ class Elementor_Widget extends Widget_Base {
 				'grid'    => 'Grid (uniform cards)',
 				'masonry' => 'Masonry (natural heights)',
 			],
-			'description' => 'Grid crops every card to the same height. Masonry keeps each image’s natural proportions (Pinterest-style) and reveals the title on hover.',
+			'description' => 'Grid crops every card to the same height. Masonry keeps each image’s natural proportions (Pinterest-style). Everything else — title, location, tags, badge, arrow — stays the same.',
 		] );
 
 		$this->add_control( 'columns', [
