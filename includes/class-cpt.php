@@ -44,6 +44,11 @@ class CPT {
 			'sanitize_callback' => [ $this, 'sanitize_tags_option' ],
 			'default'           => '',
 		] );
+		register_setting( 'gf_settings_group', 'gf_gallery_categories', [
+			'type'              => 'string',
+			'sanitize_callback' => [ $this, 'sanitize_tags_option' ],
+			'default'           => '',
+		] );
 	}
 
 	public function sanitize_tags_option( $value ) {
@@ -63,21 +68,33 @@ class CPT {
 			return;
 		}
 
-		// Pre-fill the box with the current list (defaults until a custom list is saved).
-		$stored = get_option( 'gf_gallery_tags', '' );
-		$value  = ( is_string( $stored ) && trim( $stored ) !== '' )
-			? $stored
+		// Pre-fill the boxes with the current lists (defaults until a custom list is saved).
+		$tags_stored = get_option( 'gf_gallery_tags', '' );
+		$tags_value  = ( is_string( $tags_stored ) && trim( $tags_stored ) !== '' )
+			? $tags_stored
 			: implode( "\n", gf_default_tag_options() );
+
+		$cats_stored = get_option( 'gf_gallery_categories', '' );
+		$cats_value  = ( is_string( $cats_stored ) && trim( $cats_stored ) !== '' )
+			? $cats_stored
+			: implode( "\n", gf_default_category_options() );
 		?>
 		<div class="wrap">
 			<h1>Gallery Filter — Settings</h1>
 			<form method="post" action="options.php">
 				<?php settings_fields( 'gf_settings_group' ); ?>
-				<h2>Tags</h2>
-				<p>These tags appear as checkboxes on each project and as the multi-select in the Elementor widget. <strong>One tag per line.</strong> Reorder them here to change the order they appear in.</p>
-				<textarea name="gf_gallery_tags" rows="16" cols="50" style="width:420px;max-width:100%;font-family:monospace;"><?php echo esc_textarea( $value ); ?></textarea>
+
+				<h2>Categories</h2>
+				<p>Categories are selectable on each project and in the Elementor widget, and they power the filter buttons. <strong>One category per line.</strong></p>
+				<textarea name="gf_gallery_categories" rows="8" cols="50" style="width:420px;max-width:100%;font-family:monospace;"><?php echo esc_textarea( $cats_value ); ?></textarea>
 				<p class="description">Leave empty and save to restore the built-in default list.</p>
-				<?php submit_button( 'Save Tags' ); ?>
+
+				<h2 style="margin-top:28px;">Tags</h2>
+				<p>These tags appear as checkboxes on each project and as the multi-select in the Elementor widget. <strong>One tag per line.</strong> Reorder them here to change the order they appear in.</p>
+				<textarea name="gf_gallery_tags" rows="16" cols="50" style="width:420px;max-width:100%;font-family:monospace;"><?php echo esc_textarea( $tags_value ); ?></textarea>
+				<p class="description">Leave empty and save to restore the built-in default list.</p>
+
+				<?php submit_button( 'Save Settings' ); ?>
 			</form>
 		</div>
 		<?php
@@ -175,6 +192,10 @@ class CPT {
 			'normal',
 			'high'
 		);
+
+		// Replace the default category taxonomy box with the selectable list
+		// built into Project Details below.
+		remove_meta_box( 'tagsdiv-gf_category', 'gf_project', 'side' );
 	}
 
 	public function render_meta_box( $post ) {
@@ -184,6 +205,14 @@ class CPT {
 		$location    = get_post_meta( $post->ID, '_gf_location', true );
 		$link        = get_post_meta( $post->ID, '_gf_link', true );
 		$link_target = get_post_meta( $post->ID, '_gf_link_target', true );
+
+		$post_terms   = get_the_terms( $post->ID, 'gf_category' );
+		$current_cat  = ( $post_terms && ! is_wp_error( $post_terms ) ) ? $post_terms[0]->name : '';
+		$category_opts = gf_category_options();
+		// Keep an already-assigned category selectable even if it's no longer in the list.
+		if ( $current_cat !== '' && ! in_array( $current_cat, $category_opts, true ) ) {
+			$category_opts[] = $current_cat;
+		}
 
 		$gallery = get_post_meta( $post->ID, '_gf_gallery', true );
 		$gallery = is_array( $gallery ) ? array_filter( array_map( 'intval', $gallery ) ) : [];
@@ -277,6 +306,21 @@ class CPT {
 		<table class="gf-meta-table">
 			<tr>
 				<th>
+					<label for="gf_category">Category</label>
+					<small>Powers the filter buttons</small>
+				</th>
+				<td>
+					<select id="gf_category" name="gf_category" style="min-width:220px;">
+						<option value="">— None —</option>
+						<?php foreach ( $category_opts as $cat_option ) : ?>
+						<option value="<?php echo esc_attr( $cat_option ); ?>" <?php selected( $current_cat, $cat_option ); ?>><?php echo esc_html( $cat_option ); ?></option>
+						<?php endforeach; ?>
+					</select>
+					<small>Manage the list under <a href="edit.php?post_type=gf_project&page=gf-settings">Gallery Filter → Settings</a>.</small>
+				</td>
+			</tr>
+			<tr>
+				<th>
 					<label for="gf_location">Location</label>
 					<small>Optional — e.g. Lebanon County</small>
 				</th>
@@ -346,6 +390,18 @@ class CPT {
 			$allowed
 		) );
 		update_post_meta( $post_id, '_gf_tags', implode( ', ', $selected ) );
+
+		// Category: a single selectable value stored as a gf_category term
+		// (created if it doesn't exist yet) so front-end filtering works.
+		if ( isset( $_POST['gf_category'] ) ) {
+			$cat = sanitize_text_field( wp_unslash( $_POST['gf_category'] ) );
+			if ( $cat !== '' ) {
+				wp_set_object_terms( $post_id, $cat, 'gf_category', false );
+			} else {
+				wp_set_object_terms( $post_id, [], 'gf_category' );
+			}
+		}
+
 		if ( isset( $_POST['gf_location'] ) ) {
 			update_post_meta( $post_id, '_gf_location', sanitize_text_field( wp_unslash( $_POST['gf_location'] ) ) );
 		}

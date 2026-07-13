@@ -3,7 +3,7 @@
  * Plugin Name:       Gallery Filter
  * Plugin URI:        https://servkh.com/
  * Description:       A lightweight filterable gallery with Elementor widget support. Add projects, assign categories, and drop the widget anywhere on your page.
- * Version:           1.10.0
+ * Version:           1.11.0
  * Requires at least: 5.8
  * Requires PHP:      7.4
  * Author:            Servkh
@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'GF_VERSION',    '1.10.0' );
+define( 'GF_VERSION',    '1.11.0' );
 define( 'GF_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'GF_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
@@ -65,6 +65,41 @@ function gf_tag_options() {
 	}
 
 	return apply_filters( 'gf_tag_options', $tags );
+}
+
+/**
+ * The default filter categories, used until a custom list is saved under
+ * Gallery Filter → Settings.
+ *
+ * @return string[]
+ */
+function gf_default_category_options() {
+	return [
+		'Residential',
+		'Commercial',
+		'Agricultural',
+		'Municipal',
+	];
+}
+
+/**
+ * The selectable categories, shared by the project screen (backend taxonomy)
+ * and the Elementor widget. Reads the list saved under Gallery Filter →
+ * Settings (one per line); falls back to the defaults. Filter
+ * `gf_category_options` to adjust programmatically.
+ *
+ * @return string[]
+ */
+function gf_category_options() {
+	$stored = get_option( 'gf_gallery_categories', '' );
+
+	if ( is_string( $stored ) && trim( $stored ) !== '' ) {
+		$cats = array_values( array_filter( array_map( 'trim', preg_split( '/[\r\n]+/', $stored ) ) ) );
+	} else {
+		$cats = gf_default_category_options();
+	}
+
+	return apply_filters( 'gf_category_options', $cats );
 }
 
 // ── CPT & Taxonomy ────────────────────────────────────────────────────────────

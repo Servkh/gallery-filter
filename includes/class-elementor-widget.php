@@ -97,6 +97,14 @@ class Elementor_Widget extends Widget_Base {
 			}
 		}
 
+		// Shared, selectable category list (from gf_category_options()).
+		$category_options = [ '' => '— Select —' ];
+		if ( function_exists( 'gf_category_options' ) ) {
+			foreach ( gf_category_options() as $gf_cat ) {
+				$category_options[ $gf_cat ] = $gf_cat;
+			}
+		}
+
 		$repeater->add_control( 'images', [
 			'label'       => 'Images',
 			'type'        => Controls_Manager::GALLERY,
@@ -126,10 +134,10 @@ class Elementor_Widget extends Widget_Base {
 
 		$repeater->add_control( 'category', [
 			'label'       => 'Category',
-			'type'        => Controls_Manager::TEXT,
+			'type'        => Controls_Manager::SELECT,
 			'default'     => '',
-			'placeholder' => 'e.g. Residential',
-			'description' => 'Used for the filter buttons. Items with the same category name are grouped together.',
+			'options'     => $category_options,
+			'description' => 'Used for the filter buttons. Manage the list under Gallery Filter → Settings.',
 			'label_block' => true,
 		] );
 
