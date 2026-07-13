@@ -764,15 +764,16 @@ class Elementor_Widget extends Widget_Base {
 		$this->add_control( 'lb_btn_bg', [
 			'label'     => 'Button Background',
 			'type'      => Controls_Manager::COLOR,
-			'default'   => 'rgba(0,0,0,0.55)',
-			'selectors' => [ '{{WRAPPER}} .gf-lb-close, {{WRAPPER}} .gf-lb-prev, {{WRAPPER}} .gf-lb-next' => 'background: {{VALUE}};' ],
+			'default'   => 'rgba(0,0,0,0.65)',
+			// !important so it also wins over aggressive theme button styles.
+			'selectors' => [ '{{WRAPPER}} .gf-lb-close, {{WRAPPER}} .gf-lb-prev, {{WRAPPER}} .gf-lb-next' => 'background: {{VALUE}} !important;' ],
 		] );
 
 		$this->add_control( 'lb_btn_color', [
 			'label'     => 'Icon Color',
 			'type'      => Controls_Manager::COLOR,
 			'default'   => '#ffffff',
-			'selectors' => [ '{{WRAPPER}} .gf-lb-close, {{WRAPPER}} .gf-lb-prev, {{WRAPPER}} .gf-lb-next' => 'color: {{VALUE}};' ],
+			'selectors' => [ '{{WRAPPER}} .gf-lb-close, {{WRAPPER}} .gf-lb-prev, {{WRAPPER}} .gf-lb-next' => 'color: {{VALUE}} !important;' ],
 		] );
 
 		$this->end_controls_section();

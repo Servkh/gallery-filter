@@ -663,64 +663,77 @@ body.gf-lb-open {
 .gf-lb-ba-label--before { left: 16px; right: auto; }
 .gf-lb-ba-label--after  { right: 16px; left: auto; }
 
-/* Close button */
-.gf-lb-close {
+/* ── Lightbox control buttons (close / prev / next) ──
+   These are <button> elements, and some themes style ALL buttons very
+   aggressively (often with !important), turning these into solid themed
+   squares. Reset them with .gf-wrapper specificity + !important so they
+   always render as the intended dark circular controls. The colors are
+   still overridable via the Elementor Lightbox controls (which also emit
+   !important). */
+.gf-wrapper .gf-lb-close,
+.gf-wrapper .gf-lb-prev,
+.gf-wrapper .gf-lb-next {
 	position: fixed;
+	z-index: 5;
+	margin: 0 !important;
+	padding: 0 !important;
+	min-width: 0 !important;
+	min-height: 0 !important;
+	background: rgba(0, 0, 0, 0.65) !important;
+	border: 2px solid rgba(255, 255, 255, 0.65) !important;
+	border-radius: 50% !important;
+	color: #fff !important;
+	display: flex !important;
+	align-items: center !important;
+	justify-content: center !important;
+	cursor: pointer !important;
+	box-shadow: 0 2px 14px rgba(0, 0, 0, 0.55) !important;
+	text-shadow: none !important;
+	text-transform: none !important;
+	letter-spacing: normal !important;
+	-webkit-appearance: none !important;
+	appearance: none !important;
+	line-height: 1 !important;
+	outline: none;
+}
+
+.gf-wrapper .gf-lb-close svg,
+.gf-wrapper .gf-lb-prev svg,
+.gf-wrapper .gf-lb-next svg {
+	display: block;
+	stroke: currentColor !important;
+	fill: none !important;
+}
+
+.gf-wrapper .gf-lb-close {
 	top: 20px;
 	right: 20px;
-	z-index: 5;
-	width: 54px;
-	height: 54px;
-	/* Solid dark disc + white ring so it stays clearly visible on any
-	   background — bright images or the dark backdrop. */
-	background: rgba(0, 0, 0, 0.65);
-	border: 2px solid rgba(255, 255, 255, 0.65);
-	border-radius: 50%;
-	color: #fff;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	cursor: pointer;
-	box-shadow: 0 2px 14px rgba(0, 0, 0, 0.55);
+	width: 54px !important;
+	height: 54px !important;
 	transition: background 0.2s ease, transform 0.15s ease;
 }
 
-.gf-lb-close svg { width: 28px; height: 28px; }
+.gf-wrapper .gf-lb-close svg { width: 28px; height: 28px; }
 
-.gf-lb-close:hover {
-	background: #000;
-	transform: scale(1.08);
-}
+.gf-wrapper .gf-lb-close:hover { background: #000 !important; transform: scale(1.08); }
 
-/* Prev / Next buttons */
-.gf-lb-prev,
-.gf-lb-next {
-	position: fixed;
+.gf-wrapper .gf-lb-prev,
+.gf-wrapper .gf-lb-next {
 	top: 50%;
 	transform: translateY(-50%);
-	z-index: 5;
-	width: 64px;
-	height: 64px;
-	background: rgba(0, 0, 0, 0.65);
-	border: 2px solid rgba(255, 255, 255, 0.65);
-	border-radius: 50%;
-	color: #fff;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	cursor: pointer;
-	box-shadow: 0 2px 14px rgba(0, 0, 0, 0.55);
+	width: 64px !important;
+	height: 64px !important;
 	transition: background 0.2s ease, transform 0.2s ease;
 }
 
-.gf-lb-prev svg,
-.gf-lb-next svg { width: 34px; height: 34px; }
+.gf-wrapper .gf-lb-prev svg,
+.gf-wrapper .gf-lb-next svg { width: 34px; height: 34px; }
 
-.gf-lb-prev { left: 22px; }
-.gf-lb-next { right: 22px; }
+.gf-wrapper .gf-lb-prev { left: 22px; }
+.gf-wrapper .gf-lb-next { right: 22px; }
 
-.gf-lb-prev:hover { background: #000; transform: translateY(-50%) scale(1.08); }
-.gf-lb-next:hover { background: #000; transform: translateY(-50%) scale(1.08); }
+.gf-wrapper .gf-lb-prev:hover { background: #000 !important; transform: translateY(-50%) scale(1.08); }
+.gf-wrapper .gf-lb-next:hover { background: #000 !important; transform: translateY(-50%) scale(1.08); }
 
 /* Footer: title + description + counter */
 .gf-lb-footer {
