@@ -308,6 +308,18 @@ class Elementor_Widget extends Widget_Base {
 			'condition'   => [ 'show_filter' => 'yes' ],
 		] );
 
+		$this->add_control( 'filter_wrap', [
+			'label'       => 'Filter Bar Layout',
+			'type'        => Controls_Manager::SELECT,
+			'default'     => 'wrap',
+			'options'     => [
+				'wrap'   => 'Wrap to multiple lines',
+				'scroll' => 'Single line (scroll)',
+			],
+			'description' => 'With many categories, "Single line (scroll)" keeps the bar to one row and scrolls sideways instead of wrapping — great on mobile.',
+			'condition'   => [ 'show_filter' => 'yes' ],
+		] );
+
 		$this->add_control( 'filter_source', [
 			'label'       => 'Filter Buttons From',
 			'type'        => Controls_Manager::SELECT,
@@ -889,6 +901,9 @@ class Elementor_Widget extends Widget_Base {
 		$grid_class     = 'gf-grid' . ( $layout_style === 'masonry' ? ' gf-grid--masonry' : '' );
 		$filter_style   = ! empty( $settings['filter_style'] ) ? $settings['filter_style'] : 'pills';
 		$filter_class   = 'gf-filter' . ( in_array( $filter_style, [ 'outline', 'underline', 'minimal' ], true ) ? ' gf-filter--' . $filter_style : '' );
+		if ( ! empty( $settings['filter_wrap'] ) && $settings['filter_wrap'] === 'scroll' ) {
+			$filter_class .= ' gf-filter--scroll';
+		}
 		$show_desc_card = ! empty( $settings['show_desc_on_card'] ) && $settings['show_desc_on_card'] === 'yes';
 		$show_ba_labels = ! isset( $settings['show_ba_labels'] ) || $settings['show_ba_labels'] === 'yes';
 		$before_label   = ! empty( $settings['before_label'] ) ? $settings['before_label'] : 'Before';
