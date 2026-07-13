@@ -137,7 +137,7 @@ class Elementor_Widget extends Widget_Base {
 			'type'        => Controls_Manager::SELECT,
 			'default'     => '',
 			'options'     => $category_options,
-			'description' => 'Used for the filter buttons. Manage the list under Gallery Filter → Settings.',
+			'description' => 'Used for the filter buttons. Add or edit categories under Gallery Filter → Categories.',
 			'label_block' => true,
 		] );
 

@@ -44,11 +44,6 @@ class CPT {
 			'sanitize_callback' => [ $this, 'sanitize_tags_option' ],
 			'default'           => '',
 		] );
-		register_setting( 'gf_settings_group', 'gf_gallery_categories', [
-			'type'              => 'string',
-			'sanitize_callback' => [ $this, 'sanitize_tags_option' ],
-			'default'           => '',
-		] );
 	}
 
 	public function sanitize_tags_option( $value ) {
@@ -68,33 +63,26 @@ class CPT {
 			return;
 		}
 
-		// Pre-fill the boxes with the current lists (defaults until a custom list is saved).
+		// Pre-fill the box with the current list (defaults until a custom list is saved).
 		$tags_stored = get_option( 'gf_gallery_tags', '' );
 		$tags_value  = ( is_string( $tags_stored ) && trim( $tags_stored ) !== '' )
 			? $tags_stored
 			: implode( "\n", gf_default_tag_options() );
-
-		$cats_stored = get_option( 'gf_gallery_categories', '' );
-		$cats_value  = ( is_string( $cats_stored ) && trim( $cats_stored ) !== '' )
-			? $cats_stored
-			: implode( "\n", gf_default_category_options() );
 		?>
 		<div class="wrap">
 			<h1>Gallery Filter — Settings</h1>
+
+			<p><strong>Categories</strong> are managed under <a href="edit-tags.php?taxonomy=gf_category&post_type=gf_project">Gallery Filter → Categories</a>. They appear as a dropdown on each project and in the Elementor widget.</p>
+
 			<form method="post" action="options.php">
 				<?php settings_fields( 'gf_settings_group' ); ?>
 
-				<h2>Categories</h2>
-				<p>Categories are selectable on each project and in the Elementor widget, and they power the filter buttons. <strong>One category per line.</strong></p>
-				<textarea name="gf_gallery_categories" rows="8" cols="50" style="width:420px;max-width:100%;font-family:monospace;"><?php echo esc_textarea( $cats_value ); ?></textarea>
-				<p class="description">Leave empty and save to restore the built-in default list.</p>
-
-				<h2 style="margin-top:28px;">Tags</h2>
+				<h2>Tags</h2>
 				<p>These tags appear as checkboxes on each project and as the multi-select in the Elementor widget. <strong>One tag per line.</strong> Reorder them here to change the order they appear in.</p>
 				<textarea name="gf_gallery_tags" rows="16" cols="50" style="width:420px;max-width:100%;font-family:monospace;"><?php echo esc_textarea( $tags_value ); ?></textarea>
 				<p class="description">Leave empty and save to restore the built-in default list.</p>
 
-				<?php submit_button( 'Save Settings' ); ?>
+				<?php submit_button( 'Save Tags' ); ?>
 			</form>
 		</div>
 		<?php
@@ -316,7 +304,7 @@ class CPT {
 						<option value="<?php echo esc_attr( $cat_option ); ?>" <?php selected( $current_cat, $cat_option ); ?>><?php echo esc_html( $cat_option ); ?></option>
 						<?php endforeach; ?>
 					</select>
-					<small>Manage the list under <a href="edit.php?post_type=gf_project&page=gf-settings">Gallery Filter → Settings</a>.</small>
+					<small>Add or edit categories under <a href="edit-tags.php?taxonomy=gf_category&post_type=gf_project">Gallery Filter → Categories</a>.</small>
 				</td>
 			</tr>
 			<tr>

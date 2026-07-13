@@ -4,7 +4,7 @@ Tags: gallery, filter, portfolio, elementor, before-after
 Requires at least: 5.8
 Tested up to: 6.6
 Requires PHP: 7.4
-Stable tag: 1.11.0
+Stable tag: 1.11.1
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -54,8 +54,11 @@ Reload the editor after updating so it loads the current CSS/JS (browsers cache 
 
 == Changelog ==
 
+= 1.11.1 =
+* Change: categories now come from the existing Gallery Filter → Categories taxonomy (no separate list). The project Category dropdown and the Elementor widget's Category dropdown both read those terms; the redundant Categories box on the Settings page was removed. Tags are still managed on the Settings page.
+
 = 1.11.0 =
-* New: categories are now a selectable managed list too. Edit them under Gallery Filter → Settings; the project screen shows a Category dropdown (which sets the backend Gallery Category term) and the Elementor widget's Category field is a matching dropdown. The old free-text category box on projects is replaced by this selector.
+* New: categories are now a selectable dropdown on the project screen (which sets the backend Gallery Category term) and in the Elementor widget.
 
 = 1.10.0 =
 * New: a Settings page (Gallery Filter → Settings) to edit the tag list from the dashboard — one tag per line, reorderable — instead of only in code. Falls back to the built-in defaults when empty.
