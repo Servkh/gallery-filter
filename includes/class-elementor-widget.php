@@ -170,30 +170,9 @@ class Elementor_Widget extends Widget_Base {
 			'label'       => 'Items',
 			'type'        => Controls_Manager::REPEATER,
 			'fields'      => $repeater->get_controls(),
-			'default'     => [
-				[
-					'images'   => [],
-					'title'    => 'Country Lane Driveway Restoration',
-					'category' => 'Residential',
-					'location' => 'Lebanon County',
-					'tags'     => [ 'Residential', 'New Installation', 'Stone Base', 'Drainage Solutions' ],
-					'description' => 'Complete driveway replacement for a rural property including excavation, stone base installation, and 2.5" of Superpave asphalt. We graded the surface for proper water runoff and installed a new stone base before paving.',
-				],
-				[
-					'images'   => [],
-					'title'    => 'Medical Office Parking Lot',
-					'category' => 'Commercial',
-					'tags'     => [ 'Commercial', 'Resurfacing', 'Parking Lot' ],
-					'description' => 'Full-depth reclamation and resurfacing of a busy medical office parking lot, completed in phases to keep the facility open throughout the project.',
-				],
-				[
-					'images'   => [],
-					'title'    => 'Historic Home Driveway',
-					'category' => 'Residential',
-					'tags'     => [ 'Residential', 'Custom Design' ],
-					'description' => 'A custom driveway design sympathetic to a historic property, balancing modern durability with a look appropriate to the home\'s period character.',
-				],
-			],
+			// Start empty so a freshly dropped widget has no items and no
+			// filter buttons — add your own projects and categories.
+			'default'     => [],
 			'title_field' => '{{{ title }}}',
 		] );
 
