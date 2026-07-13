@@ -56,6 +56,25 @@
 	outline-offset: 2px;
 }
 
+/* ── Outline filter style ── */
+/* Extra specificity (.gf-wrapper) so it wins over the Elementor color
+   controls' default background/border on the filter buttons. */
+.gf-wrapper .gf-filter--outline .gf-filter-btn {
+	border-width: 2px;
+	border-style: solid;
+}
+
+.gf-wrapper .gf-filter--outline .gf-filter-btn:not(.is-active) {
+	background: transparent;
+	border-color: currentColor;
+	box-shadow: none;
+}
+
+.gf-wrapper .gf-filter--outline .gf-filter-btn:not(.is-active):hover {
+	box-shadow: none;
+	opacity: 0.75;
+}
+
 /* ── Grid ── */
 .gf-grid {
 	display: grid;

@@ -307,6 +307,18 @@ class Elementor_Widget extends Widget_Base {
 			'condition' => [ 'show_filter' => 'yes' ],
 		] );
 
+		$this->add_control( 'filter_style', [
+			'label'       => 'Button Style',
+			'type'        => Controls_Manager::SELECT,
+			'default'     => 'pills',
+			'options'     => [
+				'pills'   => 'Pills (filled)',
+				'outline' => 'Outline',
+			],
+			'description' => 'Pills are solid filled buttons; Outline shows a bordered, transparent button (the active button stays filled). Colors come from the Filter Buttons style section.',
+			'condition'   => [ 'show_filter' => 'yes' ],
+		] );
+
 		$this->end_controls_section();
 
 		/* ────────── STYLE TAB ────────── */
@@ -839,6 +851,7 @@ class Elementor_Widget extends Widget_Base {
 		$hover_zoom     = $settings['hover_zoom'] === 'yes' ? 'gf-zoom' : '';
 		$layout_style   = ! empty( $settings['layout_style'] ) ? $settings['layout_style'] : 'grid';
 		$grid_class     = 'gf-grid' . ( $layout_style === 'masonry' ? ' gf-grid--masonry' : '' );
+		$filter_class   = 'gf-filter' . ( ( ! empty( $settings['filter_style'] ) && $settings['filter_style'] === 'outline' ) ? ' gf-filter--outline' : '' );
 		$show_desc_card = ! empty( $settings['show_desc_on_card'] ) && $settings['show_desc_on_card'] === 'yes';
 		$show_ba_labels = ! isset( $settings['show_ba_labels'] ) || $settings['show_ba_labels'] === 'yes';
 		$before_label   = ! empty( $settings['before_label'] ) ? $settings['before_label'] : 'Before';
@@ -856,7 +869,7 @@ class Elementor_Widget extends Widget_Base {
 		<div class="gf-wrapper" id="gf-<?php echo esc_attr( $widget_id ); ?>">
 
 			<?php if ( $settings['show_filter'] === 'yes' && ! empty( $categories ) ) : ?>
-			<div class="gf-filter" role="group" aria-label="Filter gallery">
+			<div class="<?php echo esc_attr( $filter_class ); ?>" role="group" aria-label="Filter gallery">
 				<button class="gf-filter-btn is-active" data-filter="*" aria-pressed="true">
 					<?php echo esc_html( $settings['all_label'] ); ?>
 				</button>

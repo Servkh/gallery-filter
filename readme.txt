@@ -4,7 +4,7 @@ Tags: gallery, filter, portfolio, elementor, before-after
 Requires at least: 5.8
 Tested up to: 6.6
 Requires PHP: 7.4
-Stable tag: 1.7.3
+Stable tag: 1.8.0
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -53,6 +53,9 @@ No. Projects are stored in the WordPress database, not in the plugin folder. Upd
 Reload the editor after updating so it loads the current CSS/JS (browsers cache assets aggressively). Fixed in 1.3.1.
 
 == Changelog ==
+
+= 1.8.0 =
+* New: a filter Button Style control (Filter Bar → Button Style) with an "Outline" option — bordered, transparent buttons with the active one filled — alongside the default filled "Pills". Colors still come from the Filter Buttons style section.
 
 = 1.7.3 =
 * Change: Masonry shows the title, location, and tags at all times, exactly like the Grid layout — only the image heights differ. (Reverts the hover-only behavior from 1.7.2.)
