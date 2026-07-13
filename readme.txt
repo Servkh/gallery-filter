@@ -4,7 +4,7 @@ Tags: gallery, filter, portfolio, elementor, before-after
 Requires at least: 5.8
 Tested up to: 6.6
 Requires PHP: 7.4
-Stable tag: 1.11.1
+Stable tag: 1.12.0
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -53,6 +53,9 @@ No. Projects are stored in the WordPress database, not in the plugin folder. Upd
 Reload the editor after updating so it loads the current CSS/JS (browsers cache assets aggressively). Fixed in 1.3.1.
 
 == Changelog ==
+
+= 1.12.0 =
+* New: a "Filter Bar Layout" option (Filter Bar → Filter Bar Layout). Choose "Single line (scroll)" to keep many category buttons on one row that scrolls sideways — responsive and tidy on mobile — instead of wrapping to multiple lines.
 
 = 1.11.1 =
 * Change: categories now come from the existing Gallery Filter → Categories taxonomy (no separate list). The project Category dropdown and the Elementor widget's Category dropdown both read those terms; the redundant Categories box on the Settings page was removed. Tags are still managed on the Settings page.

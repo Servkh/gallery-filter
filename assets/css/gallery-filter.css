@@ -16,6 +16,34 @@
 	margin-bottom: 32px;
 }
 
+/* Single-line, horizontally scrollable filter bar (for many categories).
+   Higher specificity so it overrides the base wrap + the alignment control. */
+.gf-wrapper .gf-filter.gf-filter--scroll {
+	flex-wrap: nowrap;
+	justify-content: flex-start;
+	overflow-x: auto;
+	overflow-y: hidden;
+	-webkit-overflow-scrolling: touch;
+	scrollbar-width: thin;
+	/* room so button shadows/hover aren't clipped by the scroll box */
+	padding: 4px 2px 10px;
+	scroll-snap-type: x proximity;
+}
+
+.gf-filter--scroll .gf-filter-btn {
+	flex: 0 0 auto;
+	scroll-snap-align: start;
+}
+
+.gf-filter--scroll::-webkit-scrollbar {
+	height: 6px;
+}
+
+.gf-filter--scroll::-webkit-scrollbar-thumb {
+	background: rgba(0, 0, 0, 0.22);
+	border-radius: 3px;
+}
+
 .gf-filter-btn {
 	display: inline-flex;
 	align-items: center;
