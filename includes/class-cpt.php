@@ -19,8 +19,68 @@ class CPT {
 		add_action( 'add_meta_boxes',   [ $this, 'add_meta_boxes' ] );
 		add_action( 'save_post',        [ $this, 'save_meta' ] );
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_admin_assets' ] );
+		add_action( 'admin_menu',           [ $this, 'add_settings_page' ] );
+		add_action( 'admin_init',           [ $this, 'register_settings' ] );
 		add_filter( 'manage_gf_project_posts_columns',       [ $this, 'add_admin_columns' ] );
 		add_action( 'manage_gf_project_posts_custom_column', [ $this, 'render_admin_columns' ], 10, 2 );
+	}
+
+	// ── Settings (tag vocabulary) ───────────────────────────────────────────────
+
+	public function add_settings_page() {
+		add_submenu_page(
+			'edit.php?post_type=gf_project',
+			'Gallery Filter Settings',
+			'Settings',
+			'manage_options',
+			'gf-settings',
+			[ $this, 'render_settings_page' ]
+		);
+	}
+
+	public function register_settings() {
+		register_setting( 'gf_settings_group', 'gf_gallery_tags', [
+			'type'              => 'string',
+			'sanitize_callback' => [ $this, 'sanitize_tags_option' ],
+			'default'           => '',
+		] );
+	}
+
+	public function sanitize_tags_option( $value ) {
+		$lines = preg_split( '/[\r\n]+/', (string) $value );
+		$clean = [];
+		foreach ( $lines as $line ) {
+			$line = sanitize_text_field( trim( $line ) );
+			if ( $line !== '' && ! in_array( $line, $clean, true ) ) {
+				$clean[] = $line;
+			}
+		}
+		return implode( "\n", $clean );
+	}
+
+	public function render_settings_page() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
+		// Pre-fill the box with the current list (defaults until a custom list is saved).
+		$stored = get_option( 'gf_gallery_tags', '' );
+		$value  = ( is_string( $stored ) && trim( $stored ) !== '' )
+			? $stored
+			: implode( "\n", gf_default_tag_options() );
+		?>
+		<div class="wrap">
+			<h1>Gallery Filter — Settings</h1>
+			<form method="post" action="options.php">
+				<?php settings_fields( 'gf_settings_group' ); ?>
+				<h2>Tags</h2>
+				<p>These tags appear as checkboxes on each project and as the multi-select in the Elementor widget. <strong>One tag per line.</strong> Reorder them here to change the order they appear in.</p>
+				<textarea name="gf_gallery_tags" rows="16" cols="50" style="width:420px;max-width:100%;font-family:monospace;"><?php echo esc_textarea( $value ); ?></textarea>
+				<p class="description">Leave empty and save to restore the built-in default list.</p>
+				<?php submit_button( 'Save Tags' ); ?>
+			</form>
+		</div>
+		<?php
 	}
 
 	// ── Post Type ─────────────────────────────────────────────────────────────
