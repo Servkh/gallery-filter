@@ -4,7 +4,7 @@ Tags: gallery, filter, portfolio, elementor, before-after
 Requires at least: 5.8
 Tested up to: 6.6
 Requires PHP: 7.4
-Stable tag: 1.7.2
+Stable tag: 1.7.3
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -54,8 +54,8 @@ Reload the editor after updating so it loads the current CSS/JS (browsers cache 
 
 == Changelog ==
 
-= 1.7.2 =
-* Change: Masonry now reads as a clean photo mosaic (like a portfolio wall) — images only at rest, with the title/location/tags fading in on hover or focus. They always show in the lightbox.
+= 1.7.3 =
+* Change: Masonry shows the title, location, and tags at all times, exactly like the Grid layout — only the image heights differ. (Reverts the hover-only behavior from 1.7.2.)
 
 = 1.7.1 =
 * Change: in the Masonry layout, the title, location, tags, badge, and arrow now stay visible just like the Grid layout — only the layout (natural image heights) differs.
