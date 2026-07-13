@@ -4,7 +4,7 @@ Tags: gallery, filter, portfolio, elementor, before-after
 Requires at least: 5.8
 Tested up to: 6.6
 Requires PHP: 7.4
-Stable tag: 1.12.0
+Stable tag: 1.12.1
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -53,6 +53,9 @@ No. Projects are stored in the WordPress database, not in the plugin folder. Upd
 Reload the editor after updating so it loads the current CSS/JS (browsers cache assets aggressively). Fixed in 1.3.1.
 
 == Changelog ==
+
+= 1.12.1 =
+* Fix: on themes that style all buttons aggressively, the lightbox close and prev/next controls could appear as themed squares with no visible icon. They're now reset (with !important) to the intended dark circular buttons regardless of theme; the Elementor Lightbox color controls still override them.
 
 = 1.12.0 =
 * New: a "Filter Bar Layout" option (Filter Bar → Filter Bar Layout). Choose "Single line (scroll)" to keep many category buttons on one row that scrolls sideways — responsive and tidy on mobile — instead of wrapping to multiple lines.
