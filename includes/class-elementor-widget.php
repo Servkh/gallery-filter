@@ -300,6 +300,38 @@ class Elementor_Widget extends Widget_Base {
 			'condition'   => [ 'show_filter' => 'yes' ],
 		] );
 
+		$this->add_control( 'filter_source', [
+			'label'       => 'Filter Buttons From',
+			'type'        => Controls_Manager::SELECT,
+			'default'     => 'auto',
+			'options'     => [
+				'auto'   => 'Item categories (automatic)',
+				'custom' => 'Custom list (below)',
+			],
+			'description' => 'Automatic builds the buttons from the categories used by your items. Custom lets you define the exact buttons and their order.',
+			'condition'   => [ 'show_filter' => 'yes' ],
+		] );
+
+		$filter_repeater = new Repeater();
+
+		$filter_repeater->add_control( 'category', [
+			'label'       => 'Category',
+			'type'        => Controls_Manager::TEXT,
+			'default'     => '',
+			'placeholder' => 'e.g. Hardscape',
+			'label_block' => true,
+		] );
+
+		$this->add_control( 'filter_categories', [
+			'label'       => 'Filter Categories',
+			'type'        => Controls_Manager::REPEATER,
+			'fields'      => $filter_repeater->get_controls(),
+			'default'     => [],
+			'title_field' => '{{{ category }}}',
+			'description' => 'These become the filter buttons, in this order. Use the same category names you set on your items.',
+			'condition'   => [ 'show_filter' => 'yes', 'filter_source' => 'custom' ],
+		] );
+
 		$this->end_controls_section();
 
 		/* ────────── STYLE TAB ────────── */
@@ -814,12 +846,27 @@ class Elementor_Widget extends Widget_Base {
 			return;
 		}
 
-		// Build ordered unique category list (preserving first-seen order)
-		$categories = [];
-		foreach ( $items as $item ) {
-			if ( $item['cat_slug'] === '' ) continue;
-			if ( ! isset( $categories[ $item['cat_slug'] ] ) ) {
-				$categories[ $item['cat_slug'] ] = $item['category'];
+		// Build the filter buttons: either a custom, explicitly-ordered list or
+		// automatically from the categories used by the items.
+		$categories    = [];
+		$filter_source = ! empty( $settings['filter_source'] ) ? $settings['filter_source'] : 'auto';
+
+		if ( $filter_source === 'custom' && ! empty( $settings['filter_categories'] ) ) {
+			foreach ( $settings['filter_categories'] as $fc ) {
+				$name = isset( $fc['category'] ) ? trim( $fc['category'] ) : '';
+				if ( $name === '' ) continue;
+				$slug = sanitize_title( $name );
+				if ( ! isset( $categories[ $slug ] ) ) {
+					$categories[ $slug ] = $name;
+				}
+			}
+		} else {
+			// Automatic — preserve first-seen order across the items.
+			foreach ( $items as $item ) {
+				if ( $item['cat_slug'] === '' ) continue;
+				if ( ! isset( $categories[ $item['cat_slug'] ] ) ) {
+					$categories[ $item['cat_slug'] ] = $item['category'];
+				}
 			}
 		}
 

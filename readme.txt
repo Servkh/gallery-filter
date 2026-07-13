@@ -4,7 +4,7 @@ Tags: gallery, filter, portfolio, elementor, before-after
 Requires at least: 5.8
 Tested up to: 6.6
 Requires PHP: 7.4
-Stable tag: 1.8.3
+Stable tag: 1.9.0
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -53,6 +53,9 @@ No. Projects are stored in the WordPress database, not in the plugin folder. Upd
 Reload the editor after updating so it loads the current CSS/JS (browsers cache assets aggressively). Fixed in 1.3.1.
 
 == Changelog ==
+
+= 1.9.0 =
+* New: define filter buttons explicitly. Filter Bar → "Filter Buttons From" can now be set to a Custom list (a repeater of category names) so you control exactly which buttons appear and in what order — or leave it on Automatic to build them from your items.
 
 = 1.8.3 =
 * Change: the widget now starts empty (no demo items), so a freshly dropped Gallery Filter has no items and no filter buttons until you add your own. In Manual mode, filter categories are created simply by typing a Category on each item.
