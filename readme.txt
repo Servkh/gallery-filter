@@ -4,7 +4,7 @@ Tags: gallery, filter, portfolio, elementor, before-after
 Requires at least: 5.8
 Tested up to: 6.6
 Requires PHP: 7.4
-Stable tag: 1.10.0
+Stable tag: 1.11.0
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -53,6 +53,9 @@ No. Projects are stored in the WordPress database, not in the plugin folder. Upd
 Reload the editor after updating so it loads the current CSS/JS (browsers cache assets aggressively). Fixed in 1.3.1.
 
 == Changelog ==
+
+= 1.11.0 =
+* New: categories are now a selectable managed list too. Edit them under Gallery Filter → Settings; the project screen shows a Category dropdown (which sets the backend Gallery Category term) and the Elementor widget's Category field is a matching dropdown. The old free-text category box on projects is replaced by this selector.
 
 = 1.10.0 =
 * New: a Settings page (Gallery Filter → Settings) to edit the tag list from the dashboard — one tag per line, reorderable — instead of only in code. Falls back to the built-in defaults when empty.
