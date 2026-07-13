@@ -3,7 +3,7 @@
  * Plugin Name:       Gallery Filter
  * Plugin URI:        https://servkh.com/
  * Description:       A lightweight filterable gallery with Elementor widget support. Add projects, assign categories, and drop the widget anywhere on your page.
- * Version:           1.9.0
+ * Version:           1.10.0
  * Requires at least: 5.8
  * Requires PHP:      7.4
  * Author:            Servkh
@@ -16,18 +16,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'GF_VERSION',    '1.9.0' );
+define( 'GF_VERSION',    '1.10.0' );
 define( 'GF_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'GF_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
 /**
- * The selectable tag vocabulary, shared by the admin project screen and the
- * Elementor widget. Filter `gf_tag_options` to add or change tags.
+ * The default tag vocabulary, used until a custom list is saved under
+ * Gallery Filter → Settings.
  *
  * @return string[]
  */
-function gf_tag_options() {
-	$tags = [
+function gf_default_tag_options() {
+	return [
 		'Residential',
 		'Commercial',
 		'Agricultural',
@@ -45,6 +45,25 @@ function gf_tag_options() {
 		'ADA Compliant',
 		'Drainage Solutions',
 	];
+}
+
+/**
+ * The selectable tag vocabulary, shared by the admin project screen and the
+ * Elementor widget. Reads the list saved under Gallery Filter → Settings
+ * (one tag per line); falls back to the defaults. Filter `gf_tag_options`
+ * to adjust programmatically.
+ *
+ * @return string[]
+ */
+function gf_tag_options() {
+	$stored = get_option( 'gf_gallery_tags', '' );
+
+	if ( is_string( $stored ) && trim( $stored ) !== '' ) {
+		$tags = array_values( array_filter( array_map( 'trim', preg_split( '/[\r\n]+/', $stored ) ) ) );
+	} else {
+		$tags = gf_default_tag_options();
+	}
+
 	return apply_filters( 'gf_tag_options', $tags );
 }
 

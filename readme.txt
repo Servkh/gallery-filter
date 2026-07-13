@@ -4,7 +4,7 @@ Tags: gallery, filter, portfolio, elementor, before-after
 Requires at least: 5.8
 Tested up to: 6.6
 Requires PHP: 7.4
-Stable tag: 1.9.0
+Stable tag: 1.10.0
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -53,6 +53,9 @@ No. Projects are stored in the WordPress database, not in the plugin folder. Upd
 Reload the editor after updating so it loads the current CSS/JS (browsers cache assets aggressively). Fixed in 1.3.1.
 
 == Changelog ==
+
+= 1.10.0 =
+* New: a Settings page (Gallery Filter → Settings) to edit the tag list from the dashboard — one tag per line, reorderable — instead of only in code. Falls back to the built-in defaults when empty.
 
 = 1.9.0 =
 * New: define filter buttons explicitly. Filter Bar → "Filter Buttons From" can now be set to a Custom list (a repeater of category names) so you control exactly which buttons appear and in what order — or leave it on Automatic to build them from your items.
